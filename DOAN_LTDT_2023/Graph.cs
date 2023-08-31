@@ -9,10 +9,12 @@ namespace DOAN_LTDT_2023
 {
     class Vertex
     {
-        public int vertex;
+        public int vertex=-1;
         public int degree = 0;
         public int inDegree = 0;
         public int outDegree = 0;
+        public int loopEdge = 0;
+        public bool isPendantVertex = false;
         public Vertex(int _vertex, int _degree, int _inDegree, int _outDegree)
         {
             vertex = _vertex;
@@ -24,17 +26,18 @@ namespace DOAN_LTDT_2023
 
     class Graph
     {
-        int numberOfVertex = 0;
-        int numberOfEdge = 0;
-        int numberOfVertexHasParallelEdge = 0;
-        int numberOfEdgeLoop = 0;
-        int numberOfPendantVertex = 0;
-        int numberOfIsolatedVertex = 0;
+        int totalVertex = 0;
+        int totalEdge = 0;
+        int totalVertexHasParallelEdge = 0;
+        int totalEdgeLoop = 0;
+        int totalPendantVertex = 0;
+        int totalIsolatedVertex = 0;
         int[,] matrix;
         bool isUndirectedGraph=true;
-        int[] vertex;
+        int[,] adjacencyMatrix;
         Vertex[] vertices;
-        
+
+
         static int[,] ReadMatrixFromFile(string filePath)
         {
             string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
@@ -68,7 +71,58 @@ namespace DOAN_LTDT_2023
             }
             return matrix;
         }
-        static Vertex[] DegreeVertex(int[,] matrix)
+        
+        static int[,] BuildAdjacencyMatrix(string filePath)
+        {
+
+            string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
+            int totalVertex = Convert.ToInt32(lines[0]);
+            int[,] adjacencyMatrix = new int[totalVertex, totalVertex];
+
+            for (int i = 0; i < totalVertex; i++)
+            {
+                for (int j = 0; j < totalVertex; j++)
+                {
+                    adjacencyMatrix[i, j] = 0;
+                }
+            }
+
+            for (int i = 0; i < totalVertex; i++)
+            {
+                string linedata = lines[i + 1];
+                string[] tokens = linedata.Split(" ");
+                // function convert array string to array int https://stackoverflow.com/questions/1297231/convert-string-to-int-in-one-line-of-code-using-linq
+                int[] numberTokens = Array.ConvertAll(tokens, int.Parse);
+                Queue<int> tokenQueue = new Queue<int>(numberTokens);
+                int numberOfAdjacencyVertex = tokenQueue.Dequeue();
+
+                for (int adjacencyVertexIndex = 0; adjacencyVertexIndex < numberOfAdjacencyVertex; adjacencyVertexIndex++)
+                {
+                    int currentRow = i;
+                    int currentCol = tokenQueue.Dequeue();
+                    // skip workload
+                    tokenQueue.Dequeue();
+                    adjacencyMatrix[currentRow, currentCol] = adjacencyMatrix[currentRow, currentCol] +1;
+                }
+
+            }
+
+            return adjacencyMatrix;
+        }
+        static bool CheckIsPendantVertex(int vertextIndex, int[,] matrix)
+        {
+            int countPendantVertex = 0;
+            for (int colIndex = 0; colIndex < matrix.GetLength(0); colIndex++)
+            {
+                if (matrix[vertextIndex, colIndex] != 0 && matrix[vertextIndex, vertextIndex] <=0)
+                {
+                    countPendantVertex++;
+                }
+              
+            }
+            return countPendantVertex == 1 ? true: false;
+        }
+        static Vertex[] DegreeVertex(int[,] matrix, bool isUndirectedGraph)
         {
             Vertex[] vertexs = new Vertex[matrix.GetLength(0)];
 
@@ -80,34 +134,62 @@ namespace DOAN_LTDT_2023
                 int outDegree = 0;
                 for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
                 {
-                    if (matrix[rowIndex, colIndex] != 0)
+                    // dont count main diagonal
+                    if (matrix[rowIndex, colIndex] > 0 && rowIndex!= colIndex)
                     {
-                        countDegree++;
-                        outDegree++;
+                        countDegree+= matrix[rowIndex, colIndex];
+                        outDegree+= matrix[rowIndex, colIndex];
                     }
 
                 }
 
                 for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
                 {
-                    if (matrix[colIndex, rowIndex] != 0)
+                    if (matrix[colIndex, rowIndex] > 0 && rowIndex != colIndex)
                     {
-                        countDegree++;
-                        inDegree++;
+                        countDegree+= matrix[colIndex, rowIndex];
+                        inDegree+= matrix[colIndex, rowIndex];
                     }
 
                 }
 
-                vertexs[rowIndex] = new Vertex(rowIndex, countDegree, inDegree, outDegree);
-            }
+                if (isUndirectedGraph)
+                {
+                    inDegree = 0;
+                    outDegree = 0;
+                    countDegree = countDegree / 2;
+                }
+               
+                // check loop edge - main diagonal, 1 loop edge  => 2degree
+                if (matrix[rowIndex, rowIndex] >= 1)
+                {
+                    if (isUndirectedGraph)
+                    {
+                        countDegree += matrix[rowIndex, rowIndex] * 2;
+                    }
+                    else
+                    {
+                        // directed Graph => countDegree = inDegree + outDegree
+                        inDegree += matrix[rowIndex, rowIndex];
+                        outDegree += matrix[rowIndex, rowIndex];
+                        countDegree = inDegree + outDegree;
+                    }
+                 
+                }
 
+                vertexs[rowIndex] = new Vertex(rowIndex, countDegree, inDegree, outDegree);
+                vertexs[rowIndex].isPendantVertex = CheckIsPendantVertex(rowIndex, matrix);
+                vertexs[rowIndex].loopEdge = matrix[rowIndex, rowIndex];
+            }
 
             return vertexs;
         }
         public Graph(string filePath)
         {
             this.matrix = ReadMatrixFromFile(filePath);
-            this.vertices = DegreeVertex(this.matrix);
+            this.adjacencyMatrix = BuildAdjacencyMatrix(filePath);
+            this.isUndirectedGraph = IsUndirectedGraph(this.adjacencyMatrix);
+            this.vertices = DegreeVertex(this.adjacencyMatrix, this.isUndirectedGraph);
         }
         static bool IsUndirectedGraph(int[,] matrix)
         {
@@ -123,34 +205,35 @@ namespace DOAN_LTDT_2023
             }
             return true;
         }
-        static int CountNumberOfEdge(int[,] matrix)
+        int CountNumberOfEdge()
         {
-            int numberofEdge = 0;
+            int countEdge = 0;
+            foreach (Vertex vertex in this.vertices)
+            {
+               
+               countEdge+= vertex.degree;
+            }
 
+            return countEdge/2;
+        }
+        static int CountVertexHasParallelEdge(int[,] matrix)
+        {
+            int numberOfParallelEdge = 0;
+        
             for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
             {
-                for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
+                for (int colIndex = 0; colIndex < matrix.GetLength(0); colIndex++)
                 {
-                    if (matrix[rowIndex, colIndex] != 0)
+                    if (matrix[rowIndex, colIndex] >1)
                     {
-
-                        numberofEdge++;
+                        numberOfParallelEdge++;
                     }
                 }
             }
 
-            if (IsUndirectedGraph(matrix) == true)
-            {
-                numberofEdge = numberofEdge / 2;
-            }
-            return numberofEdge;
+            return numberOfParallelEdge/2;
         }
-        static int CountNumberOfVertexHasParallelEdge(int[,] matrix)
-        {
-            int numberofVertexHasParallelEdge = 0;
-            return numberofVertexHasParallelEdge;
-        }
-        static int CountNumberOfEdgeLoops(int[,] matrix)
+        int CountEdgeLoops()
         {
             int count = 0;
             for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
@@ -160,30 +243,29 @@ namespace DOAN_LTDT_2023
                     count++;
                 }
             }
+
             return count;
         }
-        static int CountNumberOfPendantVertex(int[,] matrix)
+        int CountPendantVertex()
         {
             int count = 0;
-            for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
+            foreach(Vertex vertex in this.vertices)
             {
-                for (int colIndex = 0; colIndex < matrix.GetLength(1); colIndex++)
+                if (vertex.isPendantVertex)
                 {
-                    if (matrix[rowIndex, colIndex] != 0)
-                    {
-
-                    }
+                    count++;
                 }
             }
+           
             return count;
         }
-        static int CountNumberOfIsolatedVertex(Vertex[] vertexs)
+        int CountIsolatedVertex()
         {
             int count = 0;
 
-            for (int i = 0; i < vertexs.Length; i++)
+            for (int i = 0; i < this.vertices.Length; i++)
             {
-                if (vertexs[i].degree == 0)
+                if (this.vertices[i].degree == 0)
                 {
                     count++;
                 }
@@ -221,32 +303,35 @@ namespace DOAN_LTDT_2023
                 }
             }
 
-            Console.WriteLine(checkIsUndirectedGraph ? "(Bac vao - bac ra) cua tung dinh:" : "Bac cua tung dinh:");
+            Console.WriteLine(checkIsUndirectedGraph ? "Bac cua tung dinh:" : "(Bac vao - bac ra) cua tung dinh:");
             Console.WriteLine(string.Join(" ", vertexString));
         }
 
         public void AnalyzeGraph()
         {
             
-            numberOfVertex = this.matrix.GetLength(0);
-            isUndirectedGraph = IsUndirectedGraph(this.matrix);
-            numberOfEdge = CountNumberOfEdge(this.matrix);
-            numberOfVertexHasParallelEdge = CountNumberOfVertexHasParallelEdge(this.matrix);
-            numberOfEdgeLoop = CountNumberOfEdgeLoops(this.matrix);
-            numberOfPendantVertex = CountNumberOfPendantVertex(this.matrix);
-            numberOfIsolatedVertex = CountNumberOfIsolatedVertex(this.vertices);
+            totalVertex = this.vertices.Length;
+            isUndirectedGraph = IsUndirectedGraph(this.adjacencyMatrix);
+            totalEdge = this.CountNumberOfEdge();
+            totalVertexHasParallelEdge = CountVertexHasParallelEdge(this.adjacencyMatrix);
+            totalEdgeLoop = this.CountEdgeLoops();
+            totalPendantVertex = this.CountPendantVertex();
+            totalIsolatedVertex = this.CountIsolatedVertex();
         }
         public void PrintGraphInfor()
         {
-            PrintAdjacencyMatrix(matrix);
+            PrintAdjacencyMatrix(adjacencyMatrix);
             string checkIsUndirectedGraphResult = this.isUndirectedGraph ? "Do thi vo huong" : "Do thi co huong";
             Console.WriteLine($"{checkIsUndirectedGraphResult}");
-            Console.WriteLine($"So dinh cua do thi:{numberOfVertex}");
-            Console.WriteLine($"So canh cua do thi:{numberOfEdge}");
-            Console.WriteLine($"So cap dinh xuat hien canh boi cua do thi:{numberOfVertexHasParallelEdge}");
-            Console.WriteLine($"So canh khuyen cua do thi:{numberOfEdgeLoop}");
-            Console.WriteLine($"So dinh co lap:{numberOfIsolatedVertex}");
+            Console.WriteLine($"So dinh cua do thi: {totalVertex}");
+            Console.WriteLine($"So canh cua do thi: {totalEdge}");
+            Console.WriteLine($"So cap dinh xuat hien canh boi cua do thi: {totalVertexHasParallelEdge}");
+            Console.WriteLine($"So canh khuyen cua do thi: {totalEdgeLoop}");
+            Console.WriteLine($"So dinh treo: {totalPendantVertex}");
+            Console.WriteLine($"So dinh co lap: {totalIsolatedVertex}");
             PrintDegreeOfVertices(this.vertices, this.isUndirectedGraph);
+
+
         }
     }
 }
