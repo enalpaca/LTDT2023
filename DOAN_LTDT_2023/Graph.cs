@@ -38,7 +38,7 @@ namespace DOAN_LTDT_2023
         Vertex[] vertices;
 
 
-        static int[,] ReadMatrixFromFile(string filePath)
+        public static int[,] ReadMatrixFromFile(string filePath)
         {
             string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
             int totalVertex = Convert.ToInt32(lines[0]);
@@ -71,7 +71,30 @@ namespace DOAN_LTDT_2023
             }
             return matrix;
         }
-        
+
+        public static int[,] ReadAdjacencyMatrixFromFile(string filePath)
+        {
+            string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
+            int totalVertex = Convert.ToInt32(lines[0]);
+            int[,] matrix = new int[totalVertex, totalVertex];
+
+            for (int i = 0; i < totalVertex; i++)
+            {
+                string linedata = lines[i + 1];
+                string[] tokens = linedata.Split(" ");
+                // function convert array string to array int https://stackoverflow.com/questions/1297231/convert-string-to-int-in-one-line-of-code-using-linq
+                int[] numberTokens = Array.ConvertAll(tokens, int.Parse);
+
+                for (int adjacencyVertexIndex = 0; adjacencyVertexIndex < numberTokens.Length; adjacencyVertexIndex++)
+                {
+                    int currentRow = i;
+                    matrix[currentRow, adjacencyVertexIndex] = numberTokens[adjacencyVertexIndex];
+                }
+
+            }
+            return matrix;
+        }
+
         static int[,] BuildAdjacencyMatrix(string filePath)
         {
 

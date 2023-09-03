@@ -21,6 +21,17 @@ namespace DOAN_LTDT_2023
             Graph myGraph2 = new Graph(inputPath2);
             myGraph2.AnalyzeGraph();
             myGraph2.PrintGraphInfor();
+
+
+            string inputPath3 = "D:/Code/C#/LTDT2023/DOAN_LTDT_2023/datademo-yeucau2-vd1.txt";
+            int[,] yeucau2Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(inputPath3);
+            int yeucau2Vd1Source = 7;
+            int[] yeucau2Vd1VisitedVertexs = GraphTraversal.DeepFirstSearch(yeucau2Vd1Matrix, yeucau2Vd1Source);
+            
+            Console.WriteLine($"Source: {yeucau2Vd1Source}");
+            Console.WriteLine("giai thuat DFS");
+            Console.WriteLine(string.Join(" ", yeucau2Vd1VisitedVertexs)); 
+         
         }
     }
 }
