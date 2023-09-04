@@ -214,7 +214,7 @@ namespace DOAN_LTDT_2023
             this.isUndirectedGraph = IsUndirectedGraph(this.adjacencyMatrix);
             this.vertices = DegreeVertex(this.adjacencyMatrix, this.isUndirectedGraph);
         }
-        static bool IsUndirectedGraph(int[,] matrix)
+        public static bool IsUndirectedGraph(int[,] matrix)
         {
             for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
             {

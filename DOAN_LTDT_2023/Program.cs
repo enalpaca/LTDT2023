@@ -23,15 +23,21 @@ namespace DOAN_LTDT_2023
             myGraph2.PrintGraphInfor();
 
 
-            string inputPath3 = "D:/Code/C#/LTDT2023/DOAN_LTDT_2023/datademo-yeucau2-vd1.txt";
+            string inputPath3 = "D:/Code/C#/LTDT2023/DOAN_LTDT_2023/datademo-yeucau2-vd2.txt";
             int[,] yeucau2Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(inputPath3);
-            int yeucau2Vd1Source = 7;
-            int[] yeucau2Vd1VisitedVertexs = GraphTraversal.DeepFirstSearch(yeucau2Vd1Matrix, yeucau2Vd1Source);
-            
+            int yeucau2Vd1Source = 0;
+            int[] yeucau2Vd1DFSVisitedVertexs = GraphTraversal.DeepFirstSearch(yeucau2Vd1Matrix, yeucau2Vd1Source);
+            int[] yeucau2Vd1BFSVisitedVertexs = GraphTraversal.BreadthFirstSearch(yeucau2Vd1Matrix, yeucau2Vd1Source);
+            string inputPath4 = "D:/Code/C#/LTDT2023/DOAN_LTDT_2023/datademo-yeucau2-vd3.txt";
+            int[,] yeucau2Vd3Matrix = Graph.ReadAdjacencyMatrixFromFile(inputPath4);
+            int countConectedComponent = GraphTraversal.CountConnectedComponent(yeucau2Vd3Matrix);
             Console.WriteLine($"Source: {yeucau2Vd1Source}");
-            Console.WriteLine("giai thuat DFS");
-            Console.WriteLine(string.Join(" ", yeucau2Vd1VisitedVertexs)); 
-         
+            Console.WriteLine("Giai thuat DFS");
+            Console.WriteLine(string.Join(" ", yeucau2Vd1DFSVisitedVertexs));
+            Console.WriteLine("Giai thuat BFS");
+            Console.WriteLine(string.Join(" ", yeucau2Vd1BFSVisitedVertexs));
+            Console.WriteLine($"So thanh phan lien thong: {countConectedComponent}");
+
         }
     }
 }
