@@ -2,6 +2,23 @@
 
 namespace DOAN_LTDT_2023
 {
+    class ConnectedComponent
+    {
+        public int countLabel=0;
+        public int[] vertexLabels;
+        public ConnectedComponent(int _countLabel, int[] _vertexLabels)
+        {
+            this.countLabel = _countLabel;
+            this.vertexLabels = _vertexLabels;
+        }
+
+        
+    }
+    class MyStack
+    {
+        public 
+    }
+
     class GraphTraversal
     {
 
@@ -64,13 +81,14 @@ namespace DOAN_LTDT_2023
 
             return listVisited.ToArray();
         }
-        public static int CountConnectedComponent(int[,] matrix)
+        public static ConnectedComponent ProcessConnectedComponent(int[,] matrix)
         {
-
+            
             int label = 0;
-            if (true||Graph.IsUndirectedGraph(matrix))
+            int[] vertexLabels = new int[matrix.GetLength(0)];
+
+            if (Graph.IsUndirectedGraph(matrix))
             {
-                int[] vertexLabels = new int[matrix.GetLength(0)];
                 for(int k=0; k< vertexLabels.Length;k++)
                 {
                     vertexLabels[k] = 0;
@@ -86,7 +104,7 @@ namespace DOAN_LTDT_2023
                 } 
                 
             }
-            return label;
+            return new ConnectedComponent(label, vertexLabels);
         }
 
         public static void DFS_AssignLabel(int vertex,int label,ref int[] vertexlabels, int[,] matrix)
@@ -101,5 +119,6 @@ namespace DOAN_LTDT_2023
             }    
 
         }
+        
     }
 }

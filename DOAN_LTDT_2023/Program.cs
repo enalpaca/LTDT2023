@@ -30,13 +30,31 @@ namespace DOAN_LTDT_2023
             int[] yeucau2Vd1BFSVisitedVertexs = GraphTraversal.BreadthFirstSearch(yeucau2Vd1Matrix, yeucau2Vd1Source);
             string inputPath4 = "D:/Code/C#/LTDT2023/DOAN_LTDT_2023/datademo-yeucau2-vd3.txt";
             int[,] yeucau2Vd3Matrix = Graph.ReadAdjacencyMatrixFromFile(inputPath4);
-            int countConectedComponent = GraphTraversal.CountConnectedComponent(yeucau2Vd3Matrix);
+            ConnectedComponent countConectedComponent = GraphTraversal.ProcessConnectedComponent(yeucau2Vd3Matrix);
             Console.WriteLine($"Source: {yeucau2Vd1Source}");
             Console.WriteLine("Giai thuat DFS");
             Console.WriteLine(string.Join(" ", yeucau2Vd1DFSVisitedVertexs));
             Console.WriteLine("Giai thuat BFS");
             Console.WriteLine(string.Join(" ", yeucau2Vd1BFSVisitedVertexs));
-            Console.WriteLine($"So thanh phan lien thong: {countConectedComponent}");
+            Console.WriteLine($"So thanh phan lien thong: {countConectedComponent.countLabel}");
+            
+            for(int k=1; k<=countConectedComponent.countLabel; k++)
+            {
+                List<int> listConnectedTogether = new List<int>();
+                Console.WriteLine($"Thanh phan lien thong thu {k}:");
+
+                for (int i = 0; i < countConectedComponent.vertexLabels.Length; i++)
+                {
+                    if (countConectedComponent.vertexLabels[i] == k)
+                    listConnectedTogether.Add(i);
+                }
+
+                Console.WriteLine($"{ string.Join(" ", listConnectedTogether.ToArray())}");
+
+            }
+
+
+
 
         }
     }
