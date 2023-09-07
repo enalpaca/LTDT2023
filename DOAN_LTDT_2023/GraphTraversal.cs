@@ -1,22 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DOAN_LTDT_2023
 {
     class ConnectedComponent
     {
         public int countLabel=0;
-        public int[] vertexLabels;
-        public ConnectedComponent(int _countLabel, int[] _vertexLabels)
+        public List<Vertex> vertexs = new List<Vertex>();
+        public ConnectedComponent(int _countLabel, List<Vertex> _vertexs)
         {
             this.countLabel = _countLabel;
-            this.vertexLabels = _vertexLabels;
+            this.vertexs = _vertexs;
         }
-
-        
-    }
-    class MyStack
-    {
-        public 
     }
 
     class GraphTraversal
@@ -25,7 +21,7 @@ namespace DOAN_LTDT_2023
         public static int[] DeepFirstSearch(int[,] matrix, int sourceVertext)
         {
             List<int> listVisited = new List<int>();
-            Stack<int> mystack = new Stack<int>();
+            MyOderingStack mystack = new MyOderingStack();
 
             void DFS(int vertex)
             {
@@ -39,13 +35,7 @@ namespace DOAN_LTDT_2023
 
                 listVisited.Add(vertex);
 
-                if (mystack.Count == 0) return;
-
-                // sort vertex in stack
-                List<int> myList = new List<int>(mystack);
-                myList.Sort();
-                myList.Reverse();
-                mystack = new Stack<int>(myList);
+                if (mystack.GetLength() == 0) return;
 
                 DFS(mystack.Pop());
             }
@@ -85,36 +75,40 @@ namespace DOAN_LTDT_2023
         {
             
             int label = 0;
-            int[] vertexLabels = new int[matrix.GetLength(0)];
+       
+            List<Vertex> myListVertex = new List<Vertex>();
 
             if (Graph.IsUndirectedGraph(matrix))
             {
-                for(int k=0; k< vertexLabels.Length;k++)
-                {
-                    vertexLabels[k] = 0;
-                }    
-
                 for (int i=0; i<matrix.GetLength(0); i++)
                 {
-                    if(vertexLabels[i]==0)
+                    bool flag = myListVertex.Any(item => item.vertex == i);
+                    if (!flag)
                     {
                         label++;
-                        DFS_AssignLabel(i, label, ref vertexLabels, matrix);
+                        DFS_AssignLabel(i, label, matrix, ref myListVertex);
                     }    
                 } 
                 
             }
-            return new ConnectedComponent(label, vertexLabels);
+            return new ConnectedComponent(label, myListVertex);
         }
 
-        public static void DFS_AssignLabel(int vertex,int label,ref int[] vertexlabels, int[,] matrix)
+        public static void DFS_AssignLabel(int vertex,int label, int[,] matrix, ref List<Vertex> myListVertex)
         {
-            vertexlabels[vertex] = label;
-            for(int u=0; u<matrix.GetLength(0);u++)
+            Vertex vertexIns = new Vertex();
+            vertexIns.label = label;
+            vertexIns.vertex = vertex;
+
+            myListVertex.Add(vertexIns);
+
+            for (int u=0; u<matrix.GetLength(0);u++)
             {
-                if(matrix[vertex,u]!=0 &&vertexlabels[u]==0)
+                bool flag = myListVertex.Any(item => item.vertex== u);
+
+                if (matrix[vertex,u]!=0 && flag != true)
                 {
-                    DFS_AssignLabel(u, label, ref vertexlabels, matrix);
+                    DFS_AssignLabel(u, label, matrix, ref myListVertex);
                 }    
             }    
 
