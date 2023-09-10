@@ -49,4 +49,17 @@ namespace DOAN_LTDT_2023
             return myList.Count;
         }
     }
+
+    class Edge
+    {
+        public int begin;// begin Edge 
+        public int end;// end Edge 
+        public int weight; // weighted graph of begin - end edge
+        public Edge(int _begin, int _end, int _weight)
+        {
+            begin = _begin;
+            end = _end;
+            weight = _weight;
+        }
+    }
 }
