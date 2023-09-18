@@ -81,14 +81,70 @@ namespace DOAN_LTDT_2023
             for (int m = 0; m < numberOfVertex; m++)
             {
                 GraphPath path = new GraphPath(sourceVertex, m, 0, new List<Edge>()); ;
-                int tmp_prevous = m;
+                int tmp_previous = m;
 
-                while (prevous[tmp_prevous] != -1)
+                while (prevous[tmp_previous] != -1)
                 {
-                    Edge foundEdge = new Edge(prevous[tmp_prevous], tmp_prevous, matrix[prevous[tmp_prevous], tmp_prevous]);
+                    Edge foundEdge = new Edge(prevous[tmp_previous], tmp_previous, matrix[prevous[tmp_previous], tmp_previous]);
                     path.path.Add(foundEdge);
                     path.weight = path.weight + foundEdge.weight;
-                    tmp_prevous = prevous[tmp_prevous];
+                    tmp_previous = prevous[tmp_previous];
+                }
+
+                // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
+                path.path.Reverse();
+                listGraphPath.Add(path);
+            }
+
+            return listGraphPath;
+        }
+
+        public static List<GraphPath>  FordBellman (int sourceVertex, int[,] matrix)
+        {
+            List<GraphPath> listGraphPath = new List<GraphPath>();
+            int numberOfVertex = matrix.GetLength(0);
+            int[] cost = new int[numberOfVertex];
+            int[] previous = new int[numberOfVertex];
+            
+            for (int i = 0; i < numberOfVertex; i++)
+            {
+                cost[i] = Int32.MaxValue;
+                previous[i] = -1;
+            }
+            cost[sourceVertex] = 0;
+            previous[sourceVertex] = 0;
+
+            for(int step = 1;step<=numberOfVertex;step++)
+            {
+                for (int k = 0; k < numberOfVertex; k++)
+                {
+                    for (int v = 0; v < numberOfVertex; v++)
+                    {
+                        if(matrix[v,k]!=0 && previous[v]!=-1)
+                        {
+                            cost[k] = Math.Min(cost[k], cost[v] + matrix[v, k]);
+
+                            if (cost[k]== cost[v] + matrix[v, k])
+                            {
+                                previous[k] = v;
+                            }
+                        }
+                    }
+                }
+            }
+
+            previous[sourceVertex] = -1;
+            for (int m = 0; m < numberOfVertex; m++)
+            {
+                GraphPath path = new GraphPath(sourceVertex, m, 0, new List<Edge>()); ;
+                int tmp_previous = m;
+
+                while (previous[tmp_previous] != -1)
+                {
+                    Edge foundEdge = new Edge(previous[tmp_previous], tmp_previous, matrix[previous[tmp_previous], tmp_previous]);
+                    path.path.Add(foundEdge);
+                    path.weight = path.weight + foundEdge.weight;
+                    tmp_previous = previous[tmp_previous];
                 }
 
                 // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
