@@ -61,6 +61,7 @@ namespace DOAN_LTDT_2023
             */
             int[,] yeucau3Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd1.txt"));
             int[,] yeucau3Vd2Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd2.txt"));
+            int[,] yeucau4Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau4-vd1.txt"));
 
             /*Console.WriteLine("Giai thuat Prim");
             Console.WriteLine("Tap canh cua cay khung: ");
@@ -86,18 +87,37 @@ namespace DOAN_LTDT_2023
                  sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
              }
              Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithKruskalRs}");*/
-            Console.WriteLine("Giai thuat Kruskal");
-            Console.WriteLine("Tap canh cua cay khung: ");
+            /*            Console.WriteLine("Giai thuat Kruskal");
+                        Console.WriteLine("Tap canh cua cay khung: ");
 
-            List<Edge> MinSpanningTreeWithKruskalRs = SpanningTree.MinimumSpanningTreeWithKruskal(0, yeucau3Vd2Matrix);
-            int sumMinSpanningTreeWithKruskalRs = 0;
-            foreach (Edge edge in MinSpanningTreeWithKruskalRs)
+                        List<Edge> MinSpanningTreeWithKruskalRs = SpanningTree.MinimumSpanningTreeWithKruskal(0, yeucau3Vd2Matrix);
+                        int sumMinSpanningTreeWithKruskalRs = 0;
+                        foreach (Edge edge in MinSpanningTreeWithKruskalRs)
+                        {
+
+                            Console.WriteLine($"{edge.begin}-{edge.end}:{edge.weight}");
+                            sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
+                        }
+                        Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithKruskalRs}");*/
+            int dijkstraSourceVertex = 0;
+            List<GraphPath> DijkstraPaths = ShortestPath.Dijkstra(dijkstraSourceVertex, yeucau4Vd1Matrix);
+
+            if (!ShortestPath.CheckGraphHasPositiveWeight(yeucau4Vd1Matrix))
             {
-
-                Console.WriteLine($"{edge.begin}-{edge.end}:{edge.weight}");
-                sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
+                Console.WriteLine("Khong co duong di");
             }
-            Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithKruskalRs}");
+            else
+            {
+                Console.WriteLine($"Source:{dijkstraSourceVertex}");
+                foreach (GraphPath graphPath in DijkstraPaths)
+                {
+                    // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
+                    List<int> vertexs = graphPath.path.ConvertAll<int>(x => x.end);
+                    vertexs.Insert(0, dijkstraSourceVertex);
+                    Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
+                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join("->", vertexs.ToArray())}");
+                }
+            }
         }
     }
 }

@@ -62,4 +62,19 @@ namespace DOAN_LTDT_2023
             weight = _weight;
         }
     }
+
+    class GraphPath
+    {
+        public int start;
+        public int end;
+        public int weight;
+        public List<Edge> path;
+        public GraphPath(int _start, int _end, int _weight, List<Edge> _path)
+        {
+            start = _start;
+            end = _end;
+            weight = _weight;
+            path = _path;
+        } 
+    }
 }
