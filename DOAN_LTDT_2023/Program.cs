@@ -60,6 +60,7 @@ namespace DOAN_LTDT_2023
                         }
             */
             int[,] yeucau3Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd1.txt"));
+            int[,] yeucau3Vd2Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd2.txt"));
 
             /*Console.WriteLine("Giai thuat Prim");
             Console.WriteLine("Tap canh cua cay khung: ");
@@ -73,14 +74,26 @@ namespace DOAN_LTDT_2023
             }
             Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithPrimrRs}");*/
 
+            /* Console.WriteLine("Giai thuat Kruskal");
+             Console.WriteLine("Tap canh cua cay khung: ");
+
+             List<Edge> MinSpanningTreeWithKruskalRs = SpanningTree.MinimumSpanningTreeWithKruskal(0, yeucau3Vd1Matrix);
+             int sumMinSpanningTreeWithKruskalRs = 0;
+             foreach (Edge edge in MinSpanningTreeWithKruskalRs)
+             {
+
+                 Console.WriteLine($"{edge.begin}-{edge.end}:{edge.weight}");
+                 sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
+             }
+             Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithKruskalRs}");*/
             Console.WriteLine("Giai thuat Kruskal");
             Console.WriteLine("Tap canh cua cay khung: ");
 
-            List<Edge> MinSpanningTreeWithKruskalRs = SpanningTree.MinimumSpanningTreeWithKruskal(0, yeucau3Vd1Matrix);
+            List<Edge> MinSpanningTreeWithKruskalRs = SpanningTree.MinimumSpanningTreeWithKruskal(0, yeucau3Vd2Matrix);
             int sumMinSpanningTreeWithKruskalRs = 0;
             foreach (Edge edge in MinSpanningTreeWithKruskalRs)
             {
-                
+
                 Console.WriteLine($"{edge.begin}-{edge.end}:{edge.weight}");
                 sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
             }

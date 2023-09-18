@@ -6,7 +6,7 @@ namespace DOAN_LTDT_2023
 {
     class ConnectedComponent
     {
-        public int countLabel=0;
+        public int countLabel = 0;
         public List<Vertex> vertexs = new List<Vertex>();
         public ConnectedComponent(int _countLabel, List<Vertex> _vertexs)
         {
@@ -73,28 +73,28 @@ namespace DOAN_LTDT_2023
         }
         public static ConnectedComponent ProcessConnectedComponent(int[,] matrix)
         {
-            
+
             int label = 0;
-       
+
             List<Vertex> myListVertex = new List<Vertex>();
 
             if (Graph.IsUndirectedGraph(matrix))
             {
-                for (int i=0; i<matrix.GetLength(0); i++)
+                for (int i = 0; i < matrix.GetLength(0); i++)
                 {
                     bool flag = myListVertex.Any(item => item.vertex == i);
                     if (!flag)
                     {
                         label++;
                         DFS_AssignLabel(i, label, matrix, ref myListVertex);
-                    }    
-                } 
-                
+                    }
+                }
+
             }
             return new ConnectedComponent(label, myListVertex);
         }
 
-        public static void DFS_AssignLabel(int vertex,int label, int[,] matrix, ref List<Vertex> myListVertex)
+        public static void DFS_AssignLabel(int vertex, int label, int[,] matrix, ref List<Vertex> myListVertex)
         {
             Vertex vertexIns = new Vertex();
             vertexIns.label = label;
@@ -102,17 +102,16 @@ namespace DOAN_LTDT_2023
 
             myListVertex.Add(vertexIns);
 
-            for (int u=0; u<matrix.GetLength(0);u++)
+            for (int u = 0; u < matrix.GetLength(0); u++)
             {
-                bool flag = myListVertex.Any(item => item.vertex== u);
+                bool flag = myListVertex.Any(item => item.vertex == u);
 
-                if (matrix[vertex,u]!=0 && flag != true)
+                if (matrix[vertex, u] != 0 && flag != true)
                 {
                     DFS_AssignLabel(u, label, matrix, ref myListVertex);
-                }    
-            }    
-            
+                }
+            }
         }
-        
+
     }
 }
