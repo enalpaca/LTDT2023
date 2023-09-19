@@ -80,51 +80,75 @@ namespace DOAN_LTDT_2023
 
             for (int m = 0; m < numberOfVertex; m++)
             {
-                GraphPath path = new GraphPath(sourceVertex, m, 0, new List<Edge>()); ;
+                GraphPath graphPath = new GraphPath(sourceVertex, m, 0, new List<Edge>()); ;
                 int tmp_previous = m;
 
                 while (prevous[tmp_previous] != -1)
                 {
                     Edge foundEdge = new Edge(prevous[tmp_previous], tmp_previous, matrix[prevous[tmp_previous], tmp_previous]);
-                    path.path.Add(foundEdge);
-                    path.weight = path.weight + foundEdge.weight;
+                    graphPath.paths.Add(foundEdge);
+                    graphPath.weight = graphPath.weight + foundEdge.weight;
                     tmp_previous = prevous[tmp_previous];
                 }
 
                 // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
-                path.path.Reverse();
-                listGraphPath.Add(path);
+                graphPath.paths.Reverse();
+                listGraphPath.Add(graphPath);
             }
 
             return listGraphPath;
         }
+        public static bool CheckNegativeCircle(int[] weight, int[,] matrix)
+        {
+            int numberOfVertex = matrix.GetLength(0);
+            for (int i = 0; i < numberOfVertex; i++)
+            {
+                for (int j = 0; j < numberOfVertex; j++)
+                {
+                    if (weight[i] != Int32.MaxValue && weight[j] != Int32.MaxValue && weight[j] > weight[i] + matrix[i, j])
+                    {
+                        return true;
+                    }
 
-        public static List<GraphPath>  FordBellman (int sourceVertex, int[,] matrix)
+                }
+            }
+            return false;
+        }
+        public static List<GraphPath> FordBellman(int sourceVertex, int[,] matrix)
         {
             List<GraphPath> listGraphPath = new List<GraphPath>();
             int numberOfVertex = matrix.GetLength(0);
-            int[] cost = new int[numberOfVertex];
+            int[,] cost = new int[numberOfVertex, numberOfVertex];
             int[] previous = new int[numberOfVertex];
-            
+            int[] weight = new int[numberOfVertex];
+
             for (int i = 0; i < numberOfVertex; i++)
             {
-                cost[i] = Int32.MaxValue;
+                for (int j = 0; j < numberOfVertex; j++)
+                {
+                    cost[i, j] = Int32.MaxValue;
+
+                }
+                weight[i] = Int32.MaxValue;
                 previous[i] = -1;
             }
-            cost[sourceVertex] = 0;
+            cost[0, sourceVertex] = 0;
             previous[sourceVertex] = 0;
 
-            for(int step = 1;step<=numberOfVertex;step++)
+            for (int step = 1; step < numberOfVertex; step++)
             {
                 for (int k = 0; k < numberOfVertex; k++)
                 {
+                    cost[step, k] = cost[step - 1, k];
                     for (int v = 0; v < numberOfVertex; v++)
                     {
-                        if(matrix[v,k]!=0 && previous[v]!=-1)
+                        if (matrix[v, k] != 0 && cost[step - 1, v] != Int32.MaxValue)
                         {
-                            cost[k] = Math.Min(cost[k], cost[v] + matrix[v, k]);
-
-                            if (cost[k]== cost[v] + matrix[v, k])
+                            cost[step, k] = Math.Min(cost[step - 1, k], cost[step - 1, v] + matrix[v, k]);
+                            weight[k] = cost[step, k];
+                            bool checkedNegativeCircle = ShortestPath.CheckNegativeCircle(weight, matrix);
+                            Console.WriteLine($"checkedNegativeCircle {checkedNegativeCircle}");
+                            if (cost[step, k] == cost[step - 1, v] + matrix[v, k] && cost[step, k] != cost[step - 1, k])
                             {
                                 previous[k] = v;
                             }
@@ -136,20 +160,20 @@ namespace DOAN_LTDT_2023
             previous[sourceVertex] = -1;
             for (int m = 0; m < numberOfVertex; m++)
             {
-                GraphPath path = new GraphPath(sourceVertex, m, 0, new List<Edge>()); ;
+                GraphPath graphPath = new GraphPath(sourceVertex, m, Int32.MaxValue, new List<Edge>()); ;
                 int tmp_previous = m;
 
                 while (previous[tmp_previous] != -1)
                 {
                     Edge foundEdge = new Edge(previous[tmp_previous], tmp_previous, matrix[previous[tmp_previous], tmp_previous]);
-                    path.path.Add(foundEdge);
-                    path.weight = path.weight + foundEdge.weight;
+                    graphPath.paths.Add(foundEdge);
+                    graphPath.weight = graphPath.weight + foundEdge.weight;
                     tmp_previous = previous[tmp_previous];
                 }
 
                 // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
-                path.path.Reverse();
-                listGraphPath.Add(path);
+                graphPath.paths.Reverse();
+                listGraphPath.Add(graphPath);
             }
 
             return listGraphPath;

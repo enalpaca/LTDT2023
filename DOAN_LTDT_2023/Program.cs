@@ -61,7 +61,7 @@ namespace DOAN_LTDT_2023
             */
             int[,] yeucau3Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd1.txt"));
             int[,] yeucau3Vd2Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd2.txt"));
-            int[,] yeucau4Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau4-vd1.txt"));
+            int[,] yeucau4Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau4-vd3.txt"));
 
             /*Console.WriteLine("Giai thuat Prim");
             Console.WriteLine("Tap canh cua cay khung: ");
@@ -99,25 +99,25 @@ namespace DOAN_LTDT_2023
                             sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
                         }
                         Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithKruskalRs}");*/
-            int dijkstraSourceVertex = 0;
-            List<GraphPath> DijkstraPaths = ShortestPath.Dijkstra(dijkstraSourceVertex, yeucau4Vd1Matrix);
+            /*  int dijkstraSourceVertex = 0;
+              List<GraphPath> DijkstraPaths = ShortestPath.Dijkstra(dijkstraSourceVertex, yeucau4Vd1Matrix);
 
-            if (!ShortestPath.CheckGraphHasPositiveWeight(yeucau4Vd1Matrix))
-            {
-                Console.WriteLine("Khong co duong di");
-            }
-            else
-            {
-                Console.WriteLine($"Source:{dijkstraSourceVertex}");
-                foreach (GraphPath graphPath in DijkstraPaths)
-                {
-                    // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
-                    List<int> vertexs = graphPath.path.ConvertAll<int>(x => x.end);
-                    vertexs.Insert(0, dijkstraSourceVertex);
-                    Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
-                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
-                }
-            }
+              if (!ShortestPath.CheckGraphHasPositiveWeight(yeucau4Vd1Matrix))
+              {
+                  Console.WriteLine("Khong co duong di");
+              }
+              else
+              {
+                  Console.WriteLine($"Source:{dijkstraSourceVertex}");
+                  foreach (GraphPath graphPath in DijkstraPaths)
+                  {
+                      // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
+                      List<int> vertexs = graphPath.path.ConvertAll<int>(x => x.end);
+                      vertexs.Insert(0, dijkstraSourceVertex);
+                      Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
+                      Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                  }
+              }*/
 
             int fordBellmanSourceVertex = 0;
             List<GraphPath> fordBellmanPaths = ShortestPath.FordBellman(fordBellmanSourceVertex, yeucau4Vd1Matrix);
@@ -130,10 +130,17 @@ namespace DOAN_LTDT_2023
             foreach (GraphPath graphPath in fordBellmanPaths)
             {
                 // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
-                List<int> vertexs = graphPath.path.ConvertAll<int>(x => x.end);
+                List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
                 vertexs.Insert(0, fordBellmanSourceVertex);
                 Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
-                Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                if (graphPath.weight == Int32.MaxValue)
+                {
+                    Console.WriteLine("Khong co duong di");
+                }
+                else
+                {
+                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                }
             }
         }
     }
