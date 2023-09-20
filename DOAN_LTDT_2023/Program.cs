@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 namespace DOAN_LTDT_2023
 {
@@ -123,7 +124,7 @@ namespace DOAN_LTDT_2023
             List<GraphPath> fordBellmanPaths = ShortestPath.FordBellman(fordBellmanSourceVertex, yeucau4Vd1Matrix);
 
             Console.WriteLine($"Source:{fordBellmanSourceVertex}");
-            if (!ShortestPath.CheckGraphHasPositiveWeight(yeucau4Vd1Matrix))
+            if (fordBellmanPaths.Any<GraphPath>(graphPath => graphPath.negativeCircle))
             {
                 Console.WriteLine("Do thi co mach am");
             }

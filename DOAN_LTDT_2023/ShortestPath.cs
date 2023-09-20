@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -118,58 +119,85 @@ namespace DOAN_LTDT_2023
         {
             List<GraphPath> listGraphPath = new List<GraphPath>();
             int numberOfVertex = matrix.GetLength(0);
-            int[,] cost = new int[numberOfVertex, numberOfVertex];
-            int[] previous = new int[numberOfVertex];
-            int[] weight = new int[numberOfVertex];
+            int[,] cost = new int[numberOfVertex + 1, numberOfVertex];
+            int[,] previous = new int[numberOfVertex + 1, numberOfVertex];
 
             for (int i = 0; i < numberOfVertex; i++)
             {
                 for (int j = 0; j < numberOfVertex; j++)
                 {
                     cost[i, j] = Int32.MaxValue;
-
+                    previous[i, j] = -1;
                 }
-                weight[i] = Int32.MaxValue;
-                previous[i] = -1;
             }
-            cost[0, sourceVertex] = 0;
-            previous[sourceVertex] = 0;
 
-            for (int step = 1; step < numberOfVertex; step++)
+            cost[0, sourceVertex] = 0;
+            previous[0, sourceVertex] = 0;
+
+            for (int step = 0; step <= numberOfVertex; step++)
             {
                 for (int k = 0; k < numberOfVertex; k++)
                 {
-                    cost[step, k] = cost[step - 1, k];
+                    if (step - 1 >= 0)
+                    {
+                        cost[step, k] = cost[step - 1, k];
+                        previous[step, k] = previous[step - 1, k];
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
                     for (int v = 0; v < numberOfVertex; v++)
                     {
                         if (matrix[v, k] != 0 && cost[step - 1, v] != Int32.MaxValue)
                         {
                             cost[step, k] = Math.Min(cost[step - 1, k], cost[step - 1, v] + matrix[v, k]);
-                            weight[k] = cost[step, k];
-                            bool checkedNegativeCircle = ShortestPath.CheckNegativeCircle(weight, matrix);
-                            Console.WriteLine($"checkedNegativeCircle {checkedNegativeCircle}");
-                            if (cost[step, k] == cost[step - 1, v] + matrix[v, k] && cost[step, k] != cost[step - 1, k])
+
+                            if (cost[step, k] == cost[step - 1, v] + matrix[v, k])
                             {
-                                previous[k] = v;
+                                previous[step, k] = v;
                             }
                         }
                     }
                 }
             }
 
-            previous[sourceVertex] = -1;
             for (int m = 0; m < numberOfVertex; m++)
             {
-                GraphPath graphPath = new GraphPath(sourceVertex, m, Int32.MaxValue, new List<Edge>()); ;
-                int tmp_previous = m;
+                GraphPath graphPath = new GraphPath(sourceVertex, m, 0, new List<Edge>());
+                int step = numberOfVertex;
+                int end = m;
+                int start = previous[step, end];
 
-                while (previous[tmp_previous] != -1)
+                if (m == sourceVertex)
                 {
-                    Edge foundEdge = new Edge(previous[tmp_previous], tmp_previous, matrix[previous[tmp_previous], tmp_previous]);
-                    graphPath.paths.Add(foundEdge);
-                    graphPath.weight = graphPath.weight + foundEdge.weight;
-                    tmp_previous = previous[tmp_previous];
+                    listGraphPath.Add(graphPath);
+                    continue;
                 }
+
+                while (true)
+                {
+                    Edge foundEdge = new Edge(start, end, matrix[start, end]);
+                    graphPath.paths.Add(foundEdge);
+
+                    step = step - 1;
+                    if (step == 0)
+                    {
+                        graphPath.negativeCircle = true;
+                        break;
+                    }
+
+                    if (start == sourceVertex)
+                    {
+                        break;
+                    }
+
+                    end = start;
+                    start = previous[step, end];
+                }
+
+                graphPath.weight = cost[numberOfVertex, m];
 
                 // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
                 graphPath.paths.Reverse();

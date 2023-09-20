@@ -68,6 +68,7 @@ namespace DOAN_LTDT_2023
         public int start;
         public int end;
         public int weight;
+        public bool negativeCircle = false;
         public List<Edge> paths;
         public GraphPath(int _start, int _end, int _weight, List<Edge> _paths)
         {
