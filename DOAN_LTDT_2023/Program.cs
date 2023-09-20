@@ -14,6 +14,10 @@ namespace DOAN_LTDT_2023
         }
         static void Main(string[] args)
         {
+            GraphAnalysis grap1 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau1-vd2.txt"));
+            grap1.PrintGraphInfor();
+
+
 
             /*            Console.WriteLine("Day la do an cua sinh vien: Nguyen Ba Hoai Nhut!");
                         Console.WriteLine("Ma so sinh vien: 22810211");
@@ -120,29 +124,29 @@ namespace DOAN_LTDT_2023
                   }
               }*/
 
-            int fordBellmanSourceVertex = 0;
-            List<GraphPath> fordBellmanPaths = ShortestPath.FordBellman(fordBellmanSourceVertex, yeucau4Vd1Matrix);
+            /*  int fordBellmanSourceVertex = 0;
+              List<GraphPath> fordBellmanPaths = ShortestPath.FordBellman(fordBellmanSourceVertex, yeucau4Vd1Matrix);
 
-            Console.WriteLine($"Source:{fordBellmanSourceVertex}");
-            if (fordBellmanPaths.Any<GraphPath>(graphPath => graphPath.negativeCircle))
-            {
-                Console.WriteLine("Do thi co mach am");
-            }
-            foreach (GraphPath graphPath in fordBellmanPaths)
-            {
-                // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
-                List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
-                vertexs.Insert(0, fordBellmanSourceVertex);
-                Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
-                if (graphPath.weight == Int32.MaxValue)
-                {
-                    Console.WriteLine("Khong co duong di");
-                }
-                else
-                {
-                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
-                }
-            }
+              Console.WriteLine($"Source:{fordBellmanSourceVertex}");
+              if (fordBellmanPaths.Any<GraphPath>(graphPath => graphPath.negativeCircle))
+              {
+                  Console.WriteLine("Do thi co mach am");
+              }
+              foreach (GraphPath graphPath in fordBellmanPaths)
+              {
+                  // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
+                  List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
+                  vertexs.Insert(0, fordBellmanSourceVertex);
+                  Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
+                  if (graphPath.weight == Int32.MaxValue)
+                  {
+                      Console.WriteLine("Khong co duong di");
+                  }
+                  else
+                  {
+                      Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                  }
+              }*/
         }
     }
 }

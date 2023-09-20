@@ -99,22 +99,6 @@ namespace DOAN_LTDT_2023
 
             return listGraphPath;
         }
-        public static bool CheckNegativeCircle(int[] weight, int[,] matrix)
-        {
-            int numberOfVertex = matrix.GetLength(0);
-            for (int i = 0; i < numberOfVertex; i++)
-            {
-                for (int j = 0; j < numberOfVertex; j++)
-                {
-                    if (weight[i] != Int32.MaxValue && weight[j] != Int32.MaxValue && weight[j] > weight[i] + matrix[i, j])
-                    {
-                        return true;
-                    }
-
-                }
-            }
-            return false;
-        }
         public static List<GraphPath> FordBellman(int sourceVertex, int[,] matrix)
         {
             List<GraphPath> listGraphPath = new List<GraphPath>();
