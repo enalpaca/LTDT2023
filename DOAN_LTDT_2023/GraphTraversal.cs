@@ -23,23 +23,17 @@ namespace DOAN_LTDT_2023
         public int[] DeepFirstSearch(List<Edge> listEdges, int sourceVertext)
         {
             List<int> listVisited = new List<int>();
-            MyOderingStack mystack = new MyOderingStack();
 
             void DFS(int vertex)
             {
+                listVisited.Add(vertex);
                 foreach (Edge edge in listEdges)
                 {
-                    if (edge.begin== vertex && mystack.Contains(edge.end) == false && listVisited.Contains(edge.end) == false)
+                    if (edge.begin== vertex && listVisited.Contains(edge.end) == false)
                     {
-                        mystack.Push(edge.end);
+                        DFS(edge.end);
                     }
                 }
-
-                listVisited.Add(vertex);
-
-                if (mystack.GetLength() == 0) return;
-
-                DFS(mystack.Pop());
             }
 
             DFS(sourceVertext);
