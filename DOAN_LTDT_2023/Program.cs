@@ -29,10 +29,15 @@ namespace DOAN_LTDT_2023
             // Yêu cầu 2
             GraphAnalysis grap3 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd1.txt"));
             GraphTraversal graphTraversal1 = new GraphTraversal();
-            graphTraversal1.DeepFirstSearch(grap3.listEdges, 0);
-            graphTraversal1.BreadthFirstSearch(grap3.listEdges, 0);
+            graphTraversal1.DeepFirstSearch(grap3.listEdges, 7);
+            graphTraversal1.BreadthFirstSearch(grap3.listEdges, 7);
             graphTraversal1.PrintVisitedVertex();
 
+            GraphAnalysis grap4 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd2.txt"));
+            GraphTraversal graphTraversal2 = new GraphTraversal();
+            graphTraversal2.DeepFirstSearch(grap4.listEdges, 0);
+            graphTraversal2.BreadthFirstSearch(grap4.listEdges, 0);
+            graphTraversal2.PrintVisitedVertex();
 
 
             /*            
