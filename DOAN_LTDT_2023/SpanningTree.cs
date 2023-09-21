@@ -8,7 +8,7 @@ namespace DOAN_LTDT_2023
 {
     class SpanningTree
     {
-        public static List<Edge> MinimumSpanningTreeWithPrim(int sourceVertex, int[,] matrix)
+     /*   public static List<Edge> MinimumSpanningTreeWithPrim(int sourceVertex, int[,] matrix)
         {
             List<int> Y = new List<int>();
             List<Edge> T = new List<Edge>();
@@ -56,7 +56,7 @@ namespace DOAN_LTDT_2023
             }
 
             return T;
-        }
+        }*/
 
         public static List<Edge> ListEdge(int[,] matrix)
         {

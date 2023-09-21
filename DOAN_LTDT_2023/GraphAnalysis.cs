@@ -14,7 +14,7 @@ namespace DOAN_LTDT_2023
         public List<Edge> listEdges;
         public List<Vertex> vertices;
         public int[,] adjacencyMatrix;
-        bool isUndirectedGraph = true;
+        public bool isUndirectedGraph = true;
         public GraphAnalysis(string filepath)
         {
             listEdges = FileSystem.ReadEdgesFromFile(filepath);

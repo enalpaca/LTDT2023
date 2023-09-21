@@ -39,7 +39,10 @@ namespace DOAN_LTDT_2023
             graphTraversal2.BreadthFirstSearch(grap4.listEdges, 0);
             graphTraversal2.PrintVisitedVertex();
 
-
+            GraphAnalysis grap5 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd3.txt"));
+            GraphTraversal graphTraversal3 = new GraphTraversal();
+            graphTraversal3.ProcessConnectedComponent(grap5);
+            graphTraversal3.PrintConectedComponent();
             /*            
                        
                       
@@ -61,19 +64,7 @@ namespace DOAN_LTDT_2023
                         Console.WriteLine(string.Join(" ", yeucau2Vd1BFSVisitedVertexs));
                         Console.WriteLine($"So thanh phan lien thong: {countConectedComponent.countLabel}");
 
-                        for (int k = 1; k <= countConectedComponent.countLabel; k++)
-                        {
-                            List<int> listConnectedTogether = new List<int>();
 
-                            countConectedComponent.vertexs.FindAll(item => item.label == k).ForEach(item =>
-                            {
-                                listConnectedTogether.Add(item.vertex);
-                            });
-
-                            Console.WriteLine($"Thanh phan lien thong thu {k}:");
-                            Console.WriteLine($"{ string.Join(" ", listConnectedTogether.ToArray())}");
-
-                        }
             */
             int[,] yeucau3Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd1.txt"));
             int[,] yeucau3Vd2Matrix = Graph.ReadAdjacencyMatrixFromFile(GetPathTestCaseFile("datademo-yeucau3-vd2.txt"));
