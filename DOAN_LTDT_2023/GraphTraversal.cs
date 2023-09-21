@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,19 +18,20 @@ namespace DOAN_LTDT_2023
 
     class GraphTraversal
     {
-
-        public static int[] DeepFirstSearch(int[,] matrix, int sourceVertext)
+        public int[] listDFSVisitedVertex = new int[0];
+        public int[] listBFSVisitedVertex = new int[0];
+        public int[] DeepFirstSearch(List<Edge> listEdges, int sourceVertext)
         {
             List<int> listVisited = new List<int>();
             MyOderingStack mystack = new MyOderingStack();
 
             void DFS(int vertex)
             {
-                for (int i = 0; i < matrix.GetLength(0); i++)
+                foreach (Edge edge in listEdges)
                 {
-                    if (matrix[vertex, i] != 0 && mystack.Contains(i) == false && listVisited.Contains(i) == false)
+                    if (edge.begin== vertex && mystack.Contains(edge.end) == false && listVisited.Contains(edge.end) == false)
                     {
-                        mystack.Push(i);
+                        mystack.Push(edge.end);
                     }
                 }
 
@@ -42,21 +44,22 @@ namespace DOAN_LTDT_2023
 
             DFS(sourceVertext);
 
-            return listVisited.ToArray();
+            listDFSVisitedVertex = listVisited.ToArray();
+            return listDFSVisitedVertex;
         }
 
-        public static int[] BreadthFirstSearch(int[,] matrix, int sourceVertext)
+        public int[] BreadthFirstSearch(List<Edge> listEdges, int sourceVertext)
         {
             List<int> listVisited = new List<int>();
             Queue<int> myqueue = new Queue<int>();
 
             void BFS(int currentvertex)
             {
-                for (int u = 0; u < matrix.GetLength(0); u++)
+                foreach (Edge edge in listEdges)
                 {
-                    if (matrix[currentvertex, u] != 0 && listVisited.Contains(u) == false && myqueue.Contains(u) == false)
+                    if (edge.begin == currentvertex && myqueue.Contains(edge.end) == false && listVisited.Contains(edge.end) == false)
                     {
-                        myqueue.Enqueue(u);
+                        myqueue.Enqueue(edge.end);
                     }
                 }
 
@@ -69,7 +72,16 @@ namespace DOAN_LTDT_2023
             }
             BFS(sourceVertext);
 
-            return listVisited.ToArray();
+            listBFSVisitedVertex = listVisited.ToArray();
+            return listBFSVisitedVertex;
+        }
+        
+        public void PrintVisitedVertex()
+        {
+            Console.WriteLine("Giai thuat DFS");
+            Console.WriteLine(string.Join(" ", listDFSVisitedVertex));
+            Console.WriteLine("Giai thuat BFS");
+            Console.WriteLine(string.Join(" ", listBFSVisitedVertex));
         }
         public static ConnectedComponent ProcessConnectedComponent(int[,] matrix)
         {

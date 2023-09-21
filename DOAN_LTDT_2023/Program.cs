@@ -14,24 +14,30 @@ namespace DOAN_LTDT_2023
         }
         static void Main(string[] args)
         {
-            GraphAnalysis grap1 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau1-vd2.txt"));
+            Console.WriteLine("Day la do an cua sinh vien: Nguyen Ba Hoai Nhut!");
+            Console.WriteLine("Ma so sinh vien: 22810211");
+
+            // Yêu cầu 1
+            GraphAnalysis grap1 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau1-vd1.txt"));
             grap1.PrintGraphInfor();
 
+            GraphAnalysis grap2 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau1-vd2.txt"));
+            grap2.PrintGraphInfor();
+
+            Console.WriteLine("=================");
+
+            // Yêu cầu 2
+            GraphAnalysis grap3 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd1.txt"));
+            GraphTraversal graphTraversal1 = new GraphTraversal();
+            graphTraversal1.DeepFirstSearch(grap3.listEdges, 0);
+            graphTraversal1.BreadthFirstSearch(grap3.listEdges, 0);
+            graphTraversal1.PrintVisitedVertex();
 
 
-            /*            Console.WriteLine("Day la do an cua sinh vien: Nguyen Ba Hoai Nhut!");
-                        Console.WriteLine("Ma so sinh vien: 22810211");
-                        // string inputPath = "D:/Code/C#/LTDT2023/DOAN_LTDT_2023/datademo-canhkhuyen.txt";
-                        string inputPath1 = GetPathTestCaseFile("datademo-yeucau1-vd1.txt");
-                        string inputPath2 = GetPathTestCaseFile("datademo-yeucau1-vd2.txt");
 
-                        Graph myGraph1 = new Graph(inputPath1);
-                        myGraph1.AnalyzeGraph();
-                        myGraph1.PrintGraphInfor();
-
-                        Graph myGraph2 = new Graph(inputPath2);
-                        myGraph2.AnalyzeGraph();
-                        myGraph2.PrintGraphInfor();
+            /*            
+                       
+                      
 
 
                         string inputPath3 = GetPathTestCaseFile("datademo-yeucau2-vd2.txt");
