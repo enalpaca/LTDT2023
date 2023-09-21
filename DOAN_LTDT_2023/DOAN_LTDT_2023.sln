@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31112.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DOAN_LTDT_2023", "DOAN_LTDT_2023.csproj", "{56DE3F24-D770-4AE7-AEC2-4F14D97805E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DOAN_LTDT_2023", "DOAN_LTDT_2023.csproj", "{56DE3F24-D770-4AE7-AEC2-4F14D97805E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphUI", "..\WinFormsApp2\GraphUI.csproj", "{206A0B33-4C45-4F98-9819-C9D15C90A422}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{56DE3F24-D770-4AE7-AEC2-4F14D97805E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56DE3F24-D770-4AE7-AEC2-4F14D97805E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56DE3F24-D770-4AE7-AEC2-4F14D97805E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{206A0B33-4C45-4F98-9819-C9D15C90A422}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{206A0B33-4C45-4F98-9819-C9D15C90A422}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{206A0B33-4C45-4F98-9819-C9D15C90A422}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{206A0B33-4C45-4F98-9819-C9D15C90A422}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
