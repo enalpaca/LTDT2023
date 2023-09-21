@@ -6,71 +6,78 @@ using System.Threading.Tasks;
 
 namespace DOAN_LTDT_2023
 {
+
     class SpanningTree
     {
-     /*   public static List<Edge> MinimumSpanningTreeWithPrim(int sourceVertex, int[,] matrix)
+
+        public List<Edge> minSpanningTreeWithPrim = new List<Edge>();
+        public List<Edge> minSpanningTreeWithKruskal = new List<Edge>();
+        public GraphAnalysis graphAnalysis;
+        int countConnectedComponent = 0;
+
+        public SpanningTree(GraphAnalysis _graphAnalysis)
+        {
+            graphAnalysis = _graphAnalysis;
+            GraphTraversal graphTraversal = new GraphTraversal();
+            graphTraversal.ProcessConnectedComponent(graphAnalysis);
+            countConnectedComponent = graphTraversal.conectedComponent.countLabel;
+        }
+
+        public void MinimumSpanningTreeWithPrim(int sourceVertex)
         {
             List<int> Y = new List<int>();
             List<Edge> T = new List<Edge>();
-            ConnectedComponent countConectedComponent = GraphTraversal.ProcessConnectedComponent(matrix);
 
-            if (countConectedComponent.countLabel != 1)
+            if (countConnectedComponent == 1)
             {
-                Console.WriteLine("Day la do thi vo huong hoac co nhieu hon 1 thanh phan lien thong");
-                return T;
-            }
+                //Console.WriteLine("Day la do thi vo huong hoac co nhieu hon 1 thanh phan lien thong");
 
-            Y.Add(sourceVertex);
+                Y.Add(sourceVertex);
 
-            List<int> V = new List<int>();
+                List<int> V = new List<int>();
 
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                V.Add(i);
-            }
-
-            while (T.Count < matrix.GetLength(0) - 1)
-            {
-                Edge minEdge = new Edge(-1, -1, int.MaxValue);
-
-                foreach (int v in Y)
+                for (int i = 0; i < graphAnalysis.totalVertex; i++)
                 {
+                    V.Add(i);
+                }
 
-                    for (int w = 0; w < matrix.GetLength(0); w++)
+                while (T.Count < graphAnalysis.totalVertex - 1)
+                {
+                    Edge minEdge = new Edge(-1, -1, int.MaxValue);
+
+                    foreach (int v in Y)
                     {
-                        if (matrix[v, w] != 0 && Y.Contains(w) == false)
+                        foreach (Edge edge in graphAnalysis.listEdges)
                         {
-
-                            if (minEdge.weight > matrix[v, w])
+                            if (edge.begin == v && Y.Contains(edge.end) == false)
                             {
-                                minEdge.begin = v;
-                                minEdge.end = w;
-                                minEdge.weight = matrix[v, w];
+                                if (minEdge.weight > edge.weight)
+                                {
+                                    minEdge = edge;
+                                }
                             }
                         }
                     }
+
+                    Y.Add(minEdge.end);
+                    T.Add(minEdge);
                 }
-
-                Y.Add(minEdge.end);
-                T.Add(minEdge);
+                minSpanningTreeWithPrim = T;
             }
-
-            return T;
-        }*/
-
-        public static List<Edge> ListEdge(int[,] matrix)
+        }
+        public static List<Edge> FormatKruskalListEdge(List<Edge> edges)
         {
             List<Edge> listEdge = new List<Edge>();
-            for (int i = 0; i < matrix.GetLength(0); i++)
+
+            foreach (Edge edge in edges)
             {
-                for (int j = 0; j < matrix.GetLength(0); j++)
+                if (edge.begin < edge.end)
                 {
-                    if (matrix[i, j] != 0)
-                    {
-                        int begin = i < j ? i : j;
-                        int end = j > i ? j : i;
-                        listEdge.Add(new Edge(begin, end, matrix[i, j]));
-                    }
+                    listEdge.Add(edge);
+                }
+                else
+                {
+                    listEdge.Add(new Edge(edge.end, edge.begin, edge.weight));
                 }
             }
 
@@ -97,18 +104,18 @@ namespace DOAN_LTDT_2023
             return false;
         }
 
-        public static List<Edge> MinimumSpanningTreeWithKruskal(int sourceVertex, int[,] matrix)
+        public void MinimumSpanningTreeWithKruskal()
         {
-            List<Edge> listEdge = ListEdge(matrix);
+            List<Edge> listEdge = FormatKruskalListEdge(graphAnalysis.listEdges);
             List<Edge> T = new List<Edge>();
-            int[] labels = new int[matrix.GetLength(0)];
+            int[] labels = new int[graphAnalysis.totalVertex];
 
             for (int i = 0; i < labels.Length; ++i)
             {
                 labels[i] = i;
             }
 
-            while (T.Count < matrix.GetLength(0) - 1)
+            while (T.Count < graphAnalysis.totalVertex - 1)
             {
                 Edge edge = listEdge.First();
                 listEdge.Remove(edge);
@@ -134,7 +141,46 @@ namespace DOAN_LTDT_2023
                 T.Add(edge);
             }
 
-            return T;
+            minSpanningTreeWithKruskal = T;
+        }
+
+        public void PrintSpanningTree()
+        {
+            if (graphAnalysis.isUndirectedGraph == false)
+            {
+                Console.WriteLine("Day la do thi vo huong");
+            }
+
+            if (countConnectedComponent != 1)
+            {
+                Console.WriteLine("Do thi co nhieu hon 1 thanh phan lien thong");
+            }
+            //Prim
+            Console.WriteLine("Giai thuat Prim");
+            Console.WriteLine("Tap canh cua cay khung: ");
+
+            int sumMinSpanningTreeWithPrimrRs = 0;
+            foreach (Edge edge in minSpanningTreeWithPrim)
+            {
+                Console.WriteLine($"{edge.begin}-{edge.end}:{edge.weight}");
+                sumMinSpanningTreeWithPrimrRs = sumMinSpanningTreeWithPrimrRs + edge.weight;
+            }
+            Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithPrimrRs}");
+
+
+
+            //Kruskal
+            Console.WriteLine("Giai thuat Kruskal");
+            Console.WriteLine("Tap canh cua cay khung: ");
+
+            int sumMinSpanningTreeWithKruskalRs = 0;
+
+            foreach (Edge edge in minSpanningTreeWithKruskal)
+            {
+                Console.WriteLine($"{edge.begin}-{edge.end}:{edge.weight}");
+                sumMinSpanningTreeWithKruskalRs = sumMinSpanningTreeWithKruskalRs + edge.weight;
+            }
+            Console.WriteLine($"Trong so cua cay khung: {sumMinSpanningTreeWithKruskalRs}");
         }
     }
 }
