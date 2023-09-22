@@ -9,34 +9,38 @@ namespace DOAN_LTDT_2023
 {
     class ShortestPath
     {
-        public static bool CheckGraphHasPositiveWeight(int[,] matrix)
+        public GraphAnalysis graphAnalysis;
+        public List<GraphPath> dijsktraPath;
+        public int sourceVertexDijsktra;
+        public ShortestPath(GraphAnalysis _graphAnalysis)
         {
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            graphAnalysis = _graphAnalysis;
+        }
+
+        public static bool CheckGraphHasPositiveWeight(List<Edge> edges)
+        {
+            foreach (Edge edge in edges)
             {
-                for (int j = 0; j < matrix.GetLength(0); j++)
+                if (edge.weight < 0)
                 {
-                    if (matrix[i, j] < 0)
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
             return true;
         }
 
-        public static List<GraphPath> Dijkstra(int sourceVertex, int[,] matrix)
+        public void Dijkstra()
         {
-            int numberOfVertex = matrix.GetLength(0);
+            int numberOfVertex = graphAnalysis.totalVertex;
             int[] L = new int[numberOfVertex]; //Chi phi duong di tu i den k
             int[] prevous = new int[numberOfVertex]; //Dinh lien truoc cua dinh k tren duong di
             List<int> T = new List<int>();
             List<GraphPath> listGraphPath = new List<GraphPath>();
 
-            if (!CheckGraphHasPositiveWeight(matrix))
+            if (!CheckGraphHasPositiveWeight(graphAnalysis.listEdges))
             {
-
-                return listGraphPath;
+                return;
             }
 
             for (int i = 0; i < numberOfVertex; i++)
@@ -45,48 +49,48 @@ namespace DOAN_LTDT_2023
                 L[i] = Int32.MaxValue;
                 prevous[i] = -1;
             }
-            L[sourceVertex] = 0;
-            int j = sourceVertex;
+            L[sourceVertexDijsktra] = 0;
+            int j = sourceVertexDijsktra;
 
             while (T.Contains(j))
             {
                 T.Remove(j);
 
-                for (int k = 0; k < numberOfVertex; k++)
+                foreach (Edge edge in graphAnalysis.listEdges)
                 {
-                    if (matrix[j, k] > 0)
+                    if (edge.begin == j)
                     {
-                        if (L[j] + matrix[j, k] < L[k])
+                        if (L[j] + edge.weight < L[edge.end])
                         {
-                            L[k] = L[j] + matrix[j, k];
-                            prevous[k] = j;
+                            L[edge.end] = L[j] + edge.weight;
+                            prevous[edge.end] = j;
                         }
+
+                        // Tìm đỉnh l mà L[l] là min 
+                        int indexMin = 0;
+                        int valueMin = Int32.MaxValue;
+                        for (int l = 0; l < numberOfVertex; l++)
+                        {
+                            if (L[l] < valueMin && T.Contains(l))
+                            {
+                                indexMin = l;
+                                valueMin = L[l];
+                            }
+                        }
+
+                        j = indexMin;
                     }
                 }
-
-                // Tìm đỉnh l mà L[l] là min 
-                int indexMin = 0;
-                int valueMin = Int32.MaxValue;
-                for (int l = 0; l < numberOfVertex; l++)
-                {
-                    if (L[l] < valueMin && T.Contains(l))
-                    {
-                        indexMin = l;
-                        valueMin = L[l];
-                    }
-                }
-
-                j = indexMin;
             }
 
             for (int m = 0; m < numberOfVertex; m++)
             {
-                GraphPath graphPath = new GraphPath(sourceVertex, m, 0, new List<Edge>()); ;
+                GraphPath graphPath = new GraphPath(sourceVertexDijsktra, m, 0, new List<Edge>()); ;
                 int tmp_previous = m;
 
                 while (prevous[tmp_previous] != -1)
                 {
-                    Edge foundEdge = new Edge(prevous[tmp_previous], tmp_previous, matrix[prevous[tmp_previous], tmp_previous]);
+                    Edge foundEdge = graphAnalysis.listEdges.Find(x => x.begin == prevous[tmp_previous] && x.end == tmp_previous);
                     graphPath.paths.Add(foundEdge);
                     graphPath.weight = graphPath.weight + foundEdge.weight;
                     tmp_previous = prevous[tmp_previous];
@@ -97,7 +101,7 @@ namespace DOAN_LTDT_2023
                 listGraphPath.Add(graphPath);
             }
 
-            return listGraphPath;
+            dijsktraPath = listGraphPath;
         }
         public static List<GraphPath> FordBellman(int sourceVertex, int[,] matrix)
         {
@@ -189,6 +193,26 @@ namespace DOAN_LTDT_2023
             }
 
             return listGraphPath;
+        }
+
+        public void PrintDijsktraPath()
+        {
+            if (!CheckGraphHasPositiveWeight(graphAnalysis.listEdges))
+            {
+                Console.WriteLine("Khong co duong di");
+            }
+            else
+            {
+                Console.WriteLine($"Source:{sourceVertexDijsktra}");
+                foreach (GraphPath graphPath in dijsktraPath)
+                {
+                    // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
+                    List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
+                    vertexs.Insert(0, sourceVertexDijsktra);
+                    Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
+                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                }
+            }
         }
     }
 }
