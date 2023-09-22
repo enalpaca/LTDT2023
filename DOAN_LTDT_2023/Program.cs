@@ -60,12 +60,17 @@ namespace DOAN_LTDT_2023
             //Yêu cầu 4
             //Dijsktra
             GraphAnalysis grap8 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau4-Dijsktra.txt"));
-            ShortestPath shortestPath = new ShortestPath(grap8);
-            shortestPath.sourceVertexDijsktra = 0;
-            shortestPath.Dijkstra();
-            shortestPath.PrintDijsktraPath();
+            ShortestPath shortestPathDijsktra = new ShortestPath(grap8);
+            shortestPathDijsktra.sourceVertexDijsktra = 0;
+            shortestPathDijsktra.Dijkstra();
+            shortestPathDijsktra.PrintDijsktraPath();
 
-
+            //FordBellman 
+            GraphAnalysis grap9 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau4-vd1.txt"));
+            ShortestPath shortestPathFordBellman = new ShortestPath(grap9);
+            shortestPathFordBellman.sourceVertexFordBellman = 0;
+            shortestPathFordBellman.FordBellman();
+            shortestPathFordBellman.PrintFordBellmanPath();
             /*            
                         string inputPath3 = GetPathTestCaseFile("datademo-yeucau2-vd2.txt");
                         int[,] yeucau2Vd1Matrix = Graph.ReadAdjacencyMatrixFromFile(inputPath3);

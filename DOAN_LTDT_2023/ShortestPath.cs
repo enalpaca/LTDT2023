@@ -11,7 +11,9 @@ namespace DOAN_LTDT_2023
     {
         public GraphAnalysis graphAnalysis;
         public List<GraphPath> dijsktraPath;
+        public List<GraphPath> fordBellmanPaths;
         public int sourceVertexDijsktra;
+        public int sourceVertexFordBellman;
         public ShortestPath(GraphAnalysis _graphAnalysis)
         {
             graphAnalysis = _graphAnalysis;
@@ -66,21 +68,21 @@ namespace DOAN_LTDT_2023
                             prevous[edge.end] = j;
                         }
 
-                        // Tìm đỉnh l mà L[l] là min 
-                        int indexMin = 0;
-                        int valueMin = Int32.MaxValue;
-                        for (int l = 0; l < numberOfVertex; l++)
-                        {
-                            if (L[l] < valueMin && T.Contains(l))
-                            {
-                                indexMin = l;
-                                valueMin = L[l];
-                            }
-                        }
-
-                        j = indexMin;
                     }
                 }
+                // Tìm đỉnh l mà L[l] là min 
+                int indexMin = 0;
+                int valueMin = Int32.MaxValue;
+                for (int l = 0; l < numberOfVertex; l++)
+                {
+                    if (L[l] < valueMin && T.Contains(l))
+                    {
+                        indexMin = l;
+                        valueMin = L[l];
+                    }
+                }
+
+                j = indexMin;
             }
 
             for (int m = 0; m < numberOfVertex; m++)
@@ -103,10 +105,10 @@ namespace DOAN_LTDT_2023
 
             dijsktraPath = listGraphPath;
         }
-        public static List<GraphPath> FordBellman(int sourceVertex, int[,] matrix)
+        public void FordBellman()
         {
             List<GraphPath> listGraphPath = new List<GraphPath>();
-            int numberOfVertex = matrix.GetLength(0);
+            int numberOfVertex = graphAnalysis.totalVertex;
             int[,] cost = new int[numberOfVertex + 1, numberOfVertex];
             int[,] previous = new int[numberOfVertex + 1, numberOfVertex];
 
@@ -119,8 +121,8 @@ namespace DOAN_LTDT_2023
                 }
             }
 
-            cost[0, sourceVertex] = 0;
-            previous[0, sourceVertex] = 0;
+            cost[0, sourceVertexFordBellman] = 0;
+            previous[0, sourceVertexFordBellman] = 0;
 
             for (int step = 0; step <= numberOfVertex; step++)
             {
@@ -136,29 +138,28 @@ namespace DOAN_LTDT_2023
                         continue;
                     }
 
-                    for (int v = 0; v < numberOfVertex; v++)
+                    foreach(Edge edge in graphAnalysis.listEdges)
                     {
-                        if (matrix[v, k] != 0 && cost[step - 1, v] != Int32.MaxValue)
+                        if(edge.end==k && cost[step - 1, edge.begin] != Int32.MaxValue)
                         {
-                            cost[step, k] = Math.Min(cost[step - 1, k], cost[step - 1, v] + matrix[v, k]);
-
-                            if (cost[step, k] == cost[step - 1, v] + matrix[v, k])
+                            cost[step, k] = Math.Min(cost[step - 1, k], cost[step - 1, edge.begin] + edge.weight);
+                            if(cost[step,k]==cost[step-1, edge.begin] + edge.weight)
                             {
-                                previous[step, k] = v;
+                                previous[step, k] = edge.begin;
                             }
-                        }
-                    }
+                        }    
+                    }    
                 }
             }
 
             for (int m = 0; m < numberOfVertex; m++)
             {
-                GraphPath graphPath = new GraphPath(sourceVertex, m, 0, new List<Edge>());
+                GraphPath graphPath = new GraphPath(sourceVertexFordBellman, m, 0, new List<Edge>());
                 int step = numberOfVertex;
                 int end = m;
                 int start = previous[step, end];
 
-                if (m == sourceVertex)
+                if (m == sourceVertexFordBellman)
                 {
                     listGraphPath.Add(graphPath);
                     continue;
@@ -166,7 +167,7 @@ namespace DOAN_LTDT_2023
 
                 while (true)
                 {
-                    Edge foundEdge = new Edge(start, end, matrix[start, end]);
+                    Edge foundEdge = graphAnalysis.listEdges.Find(x=>x.begin==start&&x.end==end);
                     graphPath.paths.Add(foundEdge);
 
                     step = step - 1;
@@ -176,7 +177,7 @@ namespace DOAN_LTDT_2023
                         break;
                     }
 
-                    if (start == sourceVertex)
+                    if (start == sourceVertexFordBellman)
                     {
                         break;
                     }
@@ -192,7 +193,7 @@ namespace DOAN_LTDT_2023
                 listGraphPath.Add(graphPath);
             }
 
-            return listGraphPath;
+            listGraphPath = fordBellmanPaths;
         }
 
         public void PrintDijsktraPath()
@@ -210,6 +211,30 @@ namespace DOAN_LTDT_2023
                     List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
                     vertexs.Insert(0, sourceVertexDijsktra);
                     Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
+                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                }
+            }
+        }
+
+        public void PrintFordBellmanPath()
+        {
+            Console.WriteLine($"Source:{sourceVertexFordBellman}");
+            if (fordBellmanPaths.Any<GraphPath>(graphPath => graphPath.negativeCircle))
+            {
+                Console.WriteLine("Do thi co mach am");
+            }
+            foreach (GraphPath graphPath in fordBellmanPaths)
+            {
+                // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
+                List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
+                vertexs.Insert(0, sourceVertexFordBellman);
+                Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
+                if (graphPath.weight == Int32.MaxValue)
+                {
+                    Console.WriteLine("Khong co duong di");
+                }
+                else
+                {
                     Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
                 }
             }
