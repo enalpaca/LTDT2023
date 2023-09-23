@@ -61,7 +61,6 @@ namespace DOAN_LTDT_2023
                 Console.WriteLine("Do thi khong Euler");
                 return -1;
             }
-            // nua euler : khong qua 2 dinh bac le 
         }
 
         public void FindEulerCircle()
@@ -90,19 +89,25 @@ namespace DOAN_LTDT_2023
                     int v = myStack.Peek();
                     List<Edge> listNeighbor = listEdge.FindAll(x => x.begin == v);
                     int temp = Int32.MaxValue;
-                    Edge edgedelete = null;
+                    Edge deletedEdge = null;
                     foreach (Edge edge in listEdge)
                     {
                         if (edge.begin == v && temp > edge.end)
                         {
                             temp = edge.end;
-                            edgedelete = edge;
+                            deletedEdge = edge;
                         }
                     }
-                    if (edgedelete != null)
+                    if (deletedEdge != null)
                     {
-                        listEdge.Remove(edgedelete);
-                        myStack.Push(edgedelete.end);
+                        // Đây là đồ thị vô hướng liên thông nên xóa cạnh v-k thì củng xóa cạnh k-v
+                        listEdge.Remove(deletedEdge);
+                        deletedEdge = listEdge.Find(x => x.begin == deletedEdge.end && x.end == deletedEdge.begin);
+                        if (deletedEdge != null)
+                        {
+                            listEdge.Remove(deletedEdge);
+                        }
+                        myStack.Push(temp);
                     }
                     else
                     {

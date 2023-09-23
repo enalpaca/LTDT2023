@@ -79,7 +79,7 @@ namespace DOAN_LTDT_2023
             shortestPathFordBellman2.PrintFordBellmanPath();
 
             // Yêu cầu 5
-            GraphAnalysis grap11 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau3-vd2.txt"));
+            GraphAnalysis grap11 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau5-vd1.txt"));
             EulerCircle eulerCircle = new EulerCircle(grap11);
             eulerCircle.FindEulerCircle();
 
