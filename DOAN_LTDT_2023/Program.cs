@@ -81,7 +81,7 @@ namespace DOAN_LTDT_2023
             // Yêu cầu 5
             GraphAnalysis grap11 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau5-vd1.txt"));
             EulerCircle eulerCircle = new EulerCircle(grap11);
-            eulerCircle.FindEulerCircle();
+            eulerCircle.FindEulerCircle(5);
 
         }
     }

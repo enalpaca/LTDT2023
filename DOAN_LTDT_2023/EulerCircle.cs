@@ -30,7 +30,7 @@ namespace DOAN_LTDT_2023
         public int CheckPropertyEuler()
         {
             int countOddDegree = 0;
-            // euler: moi dinh deu bac chan 
+
             if (CheckSimpleGraph() != true)
             {
                 Console.WriteLine("Day khong phai don do thi");
@@ -45,14 +45,15 @@ namespace DOAN_LTDT_2023
                 countOddDegree = countOddDegree + 1;
             }
 
+            // Euler: Mọi đỉnh đều có bậc chẳn
             if (countOddDegree == 0)
             {
                 Console.WriteLine("Do thi Euler");
                 return 1;
             }
-            else if (countOddDegree <= 2)
+            // Nữa Euler: Có đúng 2 đỉnh bậc lẻ
+            else if (countOddDegree == 2)
             {
-
                 Console.WriteLine("Do thi nua Euler");
                 return 2;
             }
@@ -63,33 +64,36 @@ namespace DOAN_LTDT_2023
             }
         }
 
-        public void FindEulerCircle()
+        public void FindEulerCircle(int sourceEuler)
         {
             Stack<int> myStack = new Stack<int>();
             List<int> C = new List<int>();
-            int startVertexEuler = 0;
             List<Edge> listEdge = new List<Edge>();
             listEdge.AddRange(graphAnalysis.listEdges);
             int checkStatusEuler = CheckPropertyEuler();
 
+            myStack.Push(sourceEuler);
+
+            // Nếu nữa Euler thì source phải là 1 trong 2 đỉnh bậc lẻ
+            if (checkStatusEuler == 2)
+            {
+                Vertex vertexOdd = graphAnalysis.vertices.Find(x => x.vertex == sourceEuler);
+                if (vertexOdd == null || vertexOdd.degree % 2 == 0)
+                {
+                    // gán checkStatusEuler <0 để không gọi hàm tìm đường đi Euler bên dưới
+                    checkStatusEuler = -3;
+                }
+            }
+
             if (checkStatusEuler > 0)
             {
-                if (checkStatusEuler == 1)
-                {
-                    myStack.Push(startVertexEuler);
-                }
-                else
-                {
-                    Vertex vertexOdd = graphAnalysis.vertices.Find(x => x.degree % 2 != 0);
-                    myStack.Push(vertexOdd.vertex);
-                }
-
                 while (myStack.Count != 0)
                 {
                     int v = myStack.Peek();
                     List<Edge> listNeighbor = listEdge.FindAll(x => x.begin == v);
                     int temp = Int32.MaxValue;
                     Edge deletedEdge = null;
+
                     foreach (Edge edge in listEdge)
                     {
                         if (edge.begin == v && temp > edge.end)
@@ -98,6 +102,7 @@ namespace DOAN_LTDT_2023
                             deletedEdge = edge;
                         }
                     }
+
                     if (deletedEdge != null)
                     {
                         // Đây là đồ thị vô hướng liên thông nên xóa cạnh v-k thì củng xóa cạnh k-v
@@ -115,7 +120,17 @@ namespace DOAN_LTDT_2023
                         myStack.Pop();
                     }
                 }
+            }
 
+            Console.WriteLine($"Source: {sourceEuler}");
+            if (C.Count == 0)
+            {
+                Console.WriteLine($"Khong co loi giai");
+            }
+            else
+            {
+                Console.WriteLine($"Duong di Euler:");
+                C.Reverse();
                 Console.WriteLine($"{string.Join("->", C.ToArray())}");
             }
         }
