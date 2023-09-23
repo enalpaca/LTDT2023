@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace DOAN_LTDT_2023
 {
-    class Vertex
+    public class Vertex
     {
         public int vertex = -1;
         public int degree = 0;
@@ -50,7 +50,7 @@ namespace DOAN_LTDT_2023
         }
     }
 
-    class Edge
+    public class Edge
     {
         public int begin;// begin Edge 
         public int end;// end Edge 

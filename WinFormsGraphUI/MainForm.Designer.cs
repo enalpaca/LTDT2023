@@ -94,16 +94,16 @@
             listBox1.Size = new Size(773, 304);
             listBox1.TabIndex = 1;
             // 
-            // Form1
+            // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(listBox1);
             Controls.Add(panel1);
-            Name = "Form1";
+            Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Form1";
+            Text = "Giao diện kiểm tra các bài toán môn Lý thuyết đồ thị";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             ResumeLayout(false);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DOAN_LTDT_2023
 {
-    class GraphAnalysis
+    public class GraphAnalysis
     {
         public int totalVertex = 0;
         public int totalEdge = 0;
@@ -40,8 +40,9 @@ namespace DOAN_LTDT_2023
             return true;
         }
 
-        public static void ShowAdjacencyMatrix(int[,] matrix)
+        public static List<string> ShowAdjacencyMatrix(int[,] matrix)
         {
+            List<string> listOutput = new List<string>();
             for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
             {
                 int[] rows = new int[matrix.GetLength(1)];
@@ -52,7 +53,10 @@ namespace DOAN_LTDT_2023
                 }
 
                 Console.WriteLine(string.Join(" ", rows));
+                listOutput.Add(string.Join(" ", rows));
             }
+
+            return listOutput;
         }
 
         public int CountParallelEdge()
@@ -167,9 +171,10 @@ namespace DOAN_LTDT_2023
             return listVertices;
         }
 
-        public void PrintDegreeOfVertices(List<Vertex> vertexs, bool checkIsUndirectedGraph)
+        public List<string> PrintDegreeOfVertices(List<Vertex> vertexs, bool checkIsUndirectedGraph)
         {
             string[] vertexString = new string[vertexs.Count];
+            List<string> listOutput = new List<string>();
 
             for (int i = 0; i < vertexs.Count; i++)
             {
@@ -183,8 +188,12 @@ namespace DOAN_LTDT_2023
                 }
             }
 
-            Console.WriteLine(checkIsUndirectedGraph ? "Bac cua tung dinh:" : "(Bac vao - bac ra) cua tung dinh:");
-            Console.WriteLine(string.Join(" ", vertexString));
+            listOutput.Add(checkIsUndirectedGraph ? "Bac cua tung dinh:" : "(Bac vao - bac ra) cua tung dinh:");
+            listOutput.Add(string.Join(" ", vertexString));
+            Console.WriteLine(listOutput[0]);
+            Console.WriteLine(listOutput[1]);
+
+            return listOutput;
         }
 
         public void AnalyzeGraph()
@@ -202,24 +211,38 @@ namespace DOAN_LTDT_2023
             this.totalPendantVertex = this.CountPendantVertex();
             this.totalIsolatedVertex = this.CountIsolatedVertex();
         }
-        public void PrintGraphInfor()
+        public List<string> PrintGraphInfor()
         {
+            List<string> listOutput = new List<string>();
             AnalyzeGraph();
-            GraphAnalysis.ShowAdjacencyMatrix(adjacencyMatrix);
+            listOutput.AddRange(GraphAnalysis.ShowAdjacencyMatrix(adjacencyMatrix));
+
             string checkIsUndirectedGraphResult = this.isUndirectedGraph ? "Do thi vo huong" : "Do thi co huong";
-            Console.WriteLine($"{checkIsUndirectedGraphResult}");
-            Console.WriteLine($"So dinh cua do thi: {totalVertex}");
-            Console.WriteLine($"So canh cua do thi: {totalEdge}");
-            Console.WriteLine($"So cap dinh xuat hien canh boi cua do thi: {totalParallelEdges}");
-            Console.WriteLine($"So canh khuyen cua do thi: {totalEdgeLoop}");
-            Console.WriteLine($"So dinh treo: {totalPendantVertex}");
-            Console.WriteLine($"So dinh co lap: {totalIsolatedVertex}");
-            PrintDegreeOfVertices(this.vertices, this.isUndirectedGraph);
+            string[] listStrInfo = new string[8]
+            {
+                checkIsUndirectedGraphResult,
+                $"So dinh cua do thi: {totalVertex}",
+                $"So canh cua do thi: {totalEdge}",
+                $"So canh cua do thi: {totalEdge}",
+                $"So cap dinh xuat hien canh boi cua do thi: {totalParallelEdges}",
+                $"So canh khuyen cua do thi: {totalEdgeLoop}",
+                $"So dinh treo: {totalPendantVertex}",
+                $"So dinh co lap: {totalIsolatedVertex}"
+            };
+
+            foreach(string str in listStrInfo)
+            {
+                Console.WriteLine(str);
+                listOutput.Add(str);
+            }
+            listOutput.AddRange(PrintDegreeOfVertices(this.vertices, this.isUndirectedGraph));
+
+            return listOutput;
         }
 
         public void PrintEdges()
         {
-            foreach(Edge edge in listEdges)
+            foreach (Edge edge in listEdges)
             {
                 Console.WriteLine($"{edge.begin}->{edge.end}:{edge.weight}");
             }

@@ -8,4 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DOAN_LTDT_2023\DOAN_LTDT_2023.csproj" />
+  </ItemGroup>
+
 </Project>
