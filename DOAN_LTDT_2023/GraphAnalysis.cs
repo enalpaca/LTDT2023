@@ -203,7 +203,6 @@ namespace DOAN_LTDT_2023
             this.totalIsolatedVertex = this.CountIsolatedVertex();
         }
         public void PrintGraphInfor()
-
         {
             AnalyzeGraph();
             GraphAnalysis.ShowAdjacencyMatrix(adjacencyMatrix);
@@ -216,6 +215,14 @@ namespace DOAN_LTDT_2023
             Console.WriteLine($"So dinh treo: {totalPendantVertex}");
             Console.WriteLine($"So dinh co lap: {totalIsolatedVertex}");
             PrintDegreeOfVertices(this.vertices, this.isUndirectedGraph);
+        }
+
+        public void PrintEdges()
+        {
+            foreach(Edge edge in listEdges)
+            {
+                Console.WriteLine($"{edge.begin}->{edge.end}:{edge.weight}");
+            }
         }
     }
 }

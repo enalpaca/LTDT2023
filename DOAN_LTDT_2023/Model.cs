@@ -70,12 +70,14 @@ namespace DOAN_LTDT_2023
         public int weight;
         public bool negativeCircle = false;
         public List<Edge> paths;
+        public List<int> visitedVertices = new List<int>();
+
         public GraphPath(int _start, int _end, int _weight, List<Edge> _paths)
         {
             start = _start;
             end = _end;
             weight = _weight;
             paths = _paths;
-        } 
+        }
     }
 }

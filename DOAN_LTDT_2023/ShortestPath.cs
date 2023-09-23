@@ -51,6 +51,7 @@ namespace DOAN_LTDT_2023
                 L[i] = Int32.MaxValue;
                 prevous[i] = -1;
             }
+
             L[sourceVertexDijsktra] = 0;
             int j = sourceVertexDijsktra;
 
@@ -70,19 +71,17 @@ namespace DOAN_LTDT_2023
 
                     }
                 }
-                // Tìm đỉnh l mà L[l] là min 
-                int indexMin = 0;
+
+                // Tìm đỉnh l thuộc T mà L[l] là min, gán j=l cho lần duyệt tiếp theo
                 int valueMin = Int32.MaxValue;
-                for (int l = 0; l < numberOfVertex; l++)
+                foreach(int l in T)
                 {
                     if (L[l] < valueMin && T.Contains(l))
                     {
-                        indexMin = l;
+                        j = l;
                         valueMin = L[l];
                     }
                 }
-
-                j = indexMin;
             }
 
             for (int m = 0; m < numberOfVertex; m++)
@@ -93,13 +92,19 @@ namespace DOAN_LTDT_2023
                 while (prevous[tmp_previous] != -1)
                 {
                     Edge foundEdge = graphAnalysis.listEdges.Find(x => x.begin == prevous[tmp_previous] && x.end == tmp_previous);
-                    graphPath.paths.Add(foundEdge);
                     graphPath.weight = graphPath.weight + foundEdge.weight;
+                    graphPath.visitedVertices.Add(tmp_previous);
                     tmp_previous = prevous[tmp_previous];
                 }
 
-                // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
-                graphPath.paths.Reverse();
+                // Thêm đỉnh nguồn vào visitedVertices nếu tìm được đường đi tới m hoặc m là đỉnh nguồn
+                if (prevous[m] != -1 || sourceVertexDijsktra == m)
+                {
+                    graphPath.visitedVertices.Add(sourceVertexDijsktra);
+                }
+
+                // Đảo thứ tự ds đỉnh để được tập đỉnh theo thứ tự viếng thăm
+                graphPath.visitedVertices.Reverse();
                 listGraphPath.Add(graphPath);
             }
 
@@ -112,7 +117,7 @@ namespace DOAN_LTDT_2023
             int[,] cost = new int[numberOfVertex + 1, numberOfVertex];
             int[,] previous = new int[numberOfVertex + 1, numberOfVertex];
 
-            for (int i = 0; i < numberOfVertex; i++)
+            for (int i = 0; i <= numberOfVertex; i++)
             {
                 for (int j = 0; j < numberOfVertex; j++)
                 {
@@ -124,40 +129,47 @@ namespace DOAN_LTDT_2023
             cost[0, sourceVertexFordBellman] = 0;
             previous[0, sourceVertexFordBellman] = 0;
 
-            for (int step = 0; step <= numberOfVertex; step++)
+            for (int step = 1; step <= numberOfVertex; step++)
             {
+                // với mỗi step, tìm những đỉnh v đi vào k và cập nhật trọng số nếu cost[step, k] > cost[step - 1, v] + d(v,k)
                 for (int k = 0; k < numberOfVertex; k++)
                 {
-                    if (step - 1 >= 0)
-                    {
-                        cost[step, k] = cost[step - 1, k];
-                        previous[step, k] = previous[step - 1, k];
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    // gán cost và pre của step trước vào step hiện tại
+                    cost[step, k] = cost[step - 1, k];
+                    previous[step, k] = previous[step - 1, k];
 
-                    foreach(Edge edge in graphAnalysis.listEdges)
+                    for (int v = 0; v < numberOfVertex; v++)
                     {
-                        if(edge.end==k && cost[step - 1, edge.begin] != Int32.MaxValue)
+                        Edge edge = graphAnalysis.listEdges.Find(x => x.begin == v && x.end == k);
+                        if (edge != null && cost[step - 1, v] != Int32.MaxValue)
                         {
-                            cost[step, k] = Math.Min(cost[step - 1, k], cost[step - 1, edge.begin] + edge.weight);
-                            if(cost[step,k]==cost[step-1, edge.begin] + edge.weight)
+                            // cập nhật cost và pre của đỉnh k  số nếu cost[step, k] > cost[step - 1, v] + d(v, k)
+                            if (cost[step, k] > cost[step - 1, v] + edge.weight)
                             {
-                                previous[step, k] = edge.begin;
+                                cost[step, k] = cost[step - 1, v] + edge.weight;
+                                previous[step, k] = v;
                             }
-                        }    
-                    }    
+                        }
+                    }
                 }
             }
 
+            // Với mỗi đỉnh m thuộc đồ thị, ta truy vết để tìm đường đi tới m
             for (int m = 0; m < numberOfVertex; m++)
             {
                 GraphPath graphPath = new GraphPath(sourceVertexFordBellman, m, 0, new List<Edge>());
                 int step = numberOfVertex;
                 int end = m;
                 int start = previous[step, end];
+
+                // nếu previous[numberOfVertex, end] =-1 nghĩa là không có đường đi tới m
+                if (previous[numberOfVertex, end] == -1)
+                {
+                    listGraphPath.Add(graphPath);
+                    continue;
+                }
+
+                graphPath.visitedVertices.Add(end);
 
                 if (m == sourceVertexFordBellman)
                 {
@@ -167,11 +179,18 @@ namespace DOAN_LTDT_2023
 
                 while (true)
                 {
-                    Edge foundEdge = graphAnalysis.listEdges.Find(x=>x.begin==start&&x.end==end);
-                    graphPath.paths.Add(foundEdge);
+                    graphPath.visitedVertices.Add(start);
 
-                    step = step - 1;
-                    if (step == 0)
+                    Edge foundEdge = graphAnalysis.listEdges.Find(x => x.begin == start && x.end == end);
+
+                    if (foundEdge == null)
+                    {
+                        break;
+                    }
+
+                    graphPath.weight = graphPath.weight + foundEdge.weight;
+
+                    if (step - 1 == 0)
                     {
                         graphPath.negativeCircle = true;
                         break;
@@ -182,22 +201,22 @@ namespace DOAN_LTDT_2023
                         break;
                     }
 
+                    step = step - 1;
                     end = start;
                     start = previous[step, end];
                 }
 
-                graphPath.weight = cost[numberOfVertex, m];
-
-                // Đảo thứ tự ds cạnh để được tập cạnh sắp xếp theo chiều thuận
-                graphPath.paths.Reverse();
+                // Đảo thứ tự ds đỉnh để được tập đỉnh theo thứ tự viếng thăm
+                graphPath.visitedVertices.Reverse();
                 listGraphPath.Add(graphPath);
             }
 
-            listGraphPath = fordBellmanPaths;
+            fordBellmanPaths = listGraphPath;
         }
 
         public void PrintDijsktraPath()
         {
+            Console.WriteLine($"Tim duong di bang thuat toan Dijsktra");
             if (!CheckGraphHasPositiveWeight(graphAnalysis.listEdges))
             {
                 Console.WriteLine("Khong co duong di");
@@ -208,34 +227,37 @@ namespace DOAN_LTDT_2023
                 foreach (GraphPath graphPath in dijsktraPath)
                 {
                     // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
-                    List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
-                    vertexs.Insert(0, sourceVertexDijsktra);
                     Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
-                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                    if (graphPath.visitedVertices.Count == 0)
+                    {
+                        Console.WriteLine("Khong co duong di");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", graphPath.visitedVertices.ToArray())}");
+                    }
                 }
             }
         }
 
         public void PrintFordBellmanPath()
         {
+            Console.WriteLine($"Tim duong di bang thuat toan FordBellman");
             Console.WriteLine($"Source:{sourceVertexFordBellman}");
-            if (fordBellmanPaths.Any<GraphPath>(graphPath => graphPath.negativeCircle))
+            if (fordBellmanPaths.Any(graphPath => graphPath.negativeCircle))
             {
                 Console.WriteLine("Do thi co mach am");
             }
             foreach (GraphPath graphPath in fordBellmanPaths)
             {
-                // https://stackoverflow.com/questions/1178891/convert-or-map-a-list-of-class-to-another-list-of-class-by-using-lambda-or-linq
-                List<int> vertexs = graphPath.paths.ConvertAll<int>(x => x.end);
-                vertexs.Insert(0, sourceVertexFordBellman);
                 Console.WriteLine($"Duong di ngan nhat den {graphPath.end}:");
-                if (graphPath.weight == Int32.MaxValue)
+                if (graphPath.visitedVertices.Count == 0)
                 {
                     Console.WriteLine("Khong co duong di");
                 }
                 else
                 {
-                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", vertexs.ToArray())}");
+                    Console.WriteLine($"Cost = {graphPath.weight} Path = {string.Join(" -> ", graphPath.visitedVertices.ToArray())}");
                 }
             }
         }
