@@ -14,6 +14,7 @@ namespace DOAN_LTDT_2023
         }
         static void Main(string[] args)
         {
+            // https://www.c-sharpcorner.com/forums/printing-unicode-to-console
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             int request = -1;
             string dataInput = "";
@@ -21,7 +22,7 @@ namespace DOAN_LTDT_2023
             Console.WriteLine("Day la do an cua sinh vien: Nguyen Ba Hoai Nhut!");
             Console.WriteLine("Ma so sinh vien: 22810211");
             Console.WriteLine("UNG DUNG LY THUYET DO THI");
-            Console.WriteLine("0.Nhập vào danh sách kề của đồ thị");
+            Console.WriteLine("0. Nhập vào danh sách kề của đồ thị");
             Console.WriteLine("1. Phân tích thông tin đồ thị");
             Console.WriteLine("2. Duyệt đồ thị");
             Console.WriteLine("3. Tìm cây khung nhỏ nhất");
