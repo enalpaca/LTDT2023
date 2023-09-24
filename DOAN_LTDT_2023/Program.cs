@@ -14,75 +14,89 @@ namespace DOAN_LTDT_2023
         }
         static void Main(string[] args)
         {
+            int request = -1;
+            string dataInput = "";
+
             Console.WriteLine("Day la do an cua sinh vien: Nguyen Ba Hoai Nhut!");
             Console.WriteLine("Ma so sinh vien: 22810211");
-            Console.WriteLine($"args: {string.Join(",", args)}");
-            // Yêu cầu 1
-            GraphAnalysis grap1 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau1-vd1.txt"));
-            grap1.PrintGraphInfor();
+            Console.WriteLine("UNG DUNG LY THUYET DO THI");
+            Console.WriteLine("0.Nhập vào danh sách kề của đồ thị");
+            Console.WriteLine("1. Phân tích thông tin đồ thị");
+            Console.WriteLine("2. Duyệt đồ thị");
+            Console.WriteLine("3. Tìm cây khung nhỏ nhất");
+            Console.WriteLine("4. Tìm đường đi ngắn nhất");
+            Console.WriteLine("5. Tìm chu trình Euler");
+            Console.WriteLine("6. Clear console");
 
-            GraphAnalysis grap2 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau1-vd2.txt"));
-            grap2.PrintGraphInfor();
+            GraphAnalysis grapInstance = null;
+            Console.WriteLine("Vui long nhap duong dan file: ");
+            dataInput = Console.ReadLine();
 
-            Console.WriteLine("=================");
+            while (FileSystem.CheckExistingFile(dataInput) == false)
+            {
+                Console.WriteLine("File không tồn tại! Vui lòng nhập lại!");
+                dataInput = Console.ReadLine();
+            };
 
-            // Yêu cầu 2
-            GraphAnalysis grap3 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd1.txt"));
-            GraphTraversal graphTraversal1 = new GraphTraversal();
-            graphTraversal1.DeepFirstSearch(grap3.listEdges, 7);
-            graphTraversal1.BreadthFirstSearch(grap3.listEdges, 7);
-            graphTraversal1.PrintVisitedVertex();
+            grapInstance = new GraphAnalysis(dataInput);
 
-            GraphAnalysis grap4 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd2.txt"));
-            GraphTraversal graphTraversal2 = new GraphTraversal();
-            graphTraversal2.DeepFirstSearch(grap4.listEdges, 0);
-            graphTraversal2.BreadthFirstSearch(grap4.listEdges, 0);
-            graphTraversal2.PrintVisitedVertex();
 
-            GraphAnalysis grap5 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau2-vd3.txt"));
-            GraphTraversal graphTraversal3 = new GraphTraversal();
-            graphTraversal3.ProcessConnectedComponent(grap5);
-            graphTraversal3.PrintConectedComponent();
+            while (true)
+            {
+                Console.WriteLine("_________________________________________________");
+                Console.WriteLine("Nhap yeu cau: ");
+                request = Convert.ToInt32(Console.ReadLine());
 
-            //Yêu cầu 3
-            GraphAnalysis grap6 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau3-vd1.txt"));
-            SpanningTree spanningTree1 = new SpanningTree(grap6);
-            spanningTree1.MinimumSpanningTreeWithPrim(0);
-            spanningTree1.MinimumSpanningTreeWithKruskal();
-            spanningTree1.PrintSpanningTree();
+                switch (request)
+                {
+                    case 0:
+                        Console.WriteLine("Vui long nhap duong dan file: ");
+                        dataInput = Console.ReadLine();
+                        grapInstance = new GraphAnalysis(dataInput);
+                        break;
+                    case 1:
+                        grapInstance.PrintGraphInfor();
+                        break;
+                    case 2:
+                        int sourceVertex = Utils.ReadVertexSource(grapInstance.totalVertex);
 
-            GraphAnalysis grap7 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau3-vd2.txt"));
-            SpanningTree spanningTree2 = new SpanningTree(grap7);
-            spanningTree2.MinimumSpanningTreeWithPrim(0);
-            spanningTree2.MinimumSpanningTreeWithKruskal();
-            spanningTree2.PrintSpanningTree();
+                        GraphTraversal graphTraversalInstance = new GraphTraversal();
+                        graphTraversalInstance.DeepFirstSearch(grapInstance.listEdges, sourceVertex);
+                        graphTraversalInstance.BreadthFirstSearch(grapInstance.listEdges, sourceVertex);
+                        graphTraversalInstance.PrintVisitedVertex();
 
-            //Yêu cầu 4
-            //Dijsktra
-            GraphAnalysis grap8 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau4-Dijsktra.txt"));
-            ShortestPath shortestPathDijsktra = new ShortestPath(grap8);
-            shortestPathDijsktra.sourceVertexDijsktra = 0;
-            shortestPathDijsktra.Dijkstra();
-            shortestPathDijsktra.PrintDijsktraPath();
+                        graphTraversalInstance.ProcessConnectedComponent(grapInstance);
+                        graphTraversalInstance.PrintConectedComponent();
 
-            //FordBellman 
-            GraphAnalysis grap9 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau4-vd1.txt"));
-            ShortestPath shortestPathFordBellman1 = new ShortestPath(grap9);
-            shortestPathFordBellman1.sourceVertexFordBellman = 0;
-            shortestPathFordBellman1.FordBellman();
-            shortestPathFordBellman1.PrintFordBellmanPath();
+                        break;
+                    case 3:
+                        int sourceVertexSpanningTreeWithPrim = Utils.ReadVertexSource(grapInstance.totalVertex);
+                        SpanningTree spanningTree = new SpanningTree(grapInstance);
+                        spanningTree.MinimumSpanningTreeWithPrim(sourceVertexSpanningTreeWithPrim);
+                        spanningTree.MinimumSpanningTreeWithKruskal();
+                        spanningTree.PrintSpanningTree();
 
-            GraphAnalysis grap10 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau4-vd2.txt"));
-            ShortestPath shortestPathFordBellman2 = new ShortestPath(grap10);
-            shortestPathFordBellman2.sourceVertexFordBellman = 0;
-            shortestPathFordBellman2.FordBellman();
-            shortestPathFordBellman2.PrintFordBellmanPath();
+                        break;
+                    case 4:
+                        int sourceVertexShortestPath = Utils.ReadVertexSource(grapInstance.totalVertex);
+                        ShortestPath shortestPathDijsktra = new ShortestPath(grapInstance);
+                        shortestPathDijsktra.Dijkstra(sourceVertexShortestPath);
+                        shortestPathDijsktra.PrintDijsktraPath();
 
-            // Yêu cầu 5
-            GraphAnalysis grap11 = new GraphAnalysis(GetPathTestCaseFile("data-yeucau5-vd1.txt"));
-            EulerCircle eulerCircle = new EulerCircle(grap11);
-            eulerCircle.FindEulerCircle(5);
+                        ShortestPath shortestPathFordBellman = new ShortestPath(grapInstance);
+                        shortestPathFordBellman.FordBellman(sourceVertexShortestPath);
+                        shortestPathFordBellman.PrintFordBellmanPath();
+                        break;
+                    case 5:
+                        int sourceVertexEuler = Utils.ReadVertexSource(grapInstance.totalVertex);
+                        EulerCircle eulerCircle = new EulerCircle(grapInstance);
+                        eulerCircle.FindEulerCircle(sourceVertexEuler);
+                        break;
+                    case 6: //thoat ctrinh
+                        return;
 
+                };
+            }
         }
     }
 }
