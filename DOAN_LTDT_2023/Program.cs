@@ -14,6 +14,7 @@ namespace DOAN_LTDT_2023
         }
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             int request = -1;
             string dataInput = "";
 
