@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DOAN_LTDT_2023
 {
     class FileSystem
     {
+
         public static int[,] ReadAdjacencyMatrixFromFile(string filePath)
         {
             string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);
@@ -68,6 +67,11 @@ namespace DOAN_LTDT_2023
             }
 
             return listEdges;
+        }
+
+        public static bool CheckExistingFile(string filePath)
+        {
+            return File.Exists(filePath);
         }
     }
 }

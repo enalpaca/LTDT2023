@@ -218,11 +218,10 @@ namespace DOAN_LTDT_2023
             listOutput.AddRange(GraphAnalysis.ShowAdjacencyMatrix(adjacencyMatrix));
 
             string checkIsUndirectedGraphResult = this.isUndirectedGraph ? "Do thi vo huong" : "Do thi co huong";
-            string[] listStrInfo = new string[8]
+            string[] listStrInfo = new string[7]
             {
                 checkIsUndirectedGraphResult,
                 $"So dinh cua do thi: {totalVertex}",
-                $"So canh cua do thi: {totalEdge}",
                 $"So canh cua do thi: {totalEdge}",
                 $"So cap dinh xuat hien canh boi cua do thi: {totalParallelEdges}",
                 $"So canh khuyen cua do thi: {totalEdgeLoop}",

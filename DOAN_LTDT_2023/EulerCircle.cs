@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DOAN_LTDT_2023
 {
@@ -10,7 +7,6 @@ namespace DOAN_LTDT_2023
     {
         //check don dthi: vo huong, khong canh boi, khong canh khuyen
         public GraphAnalysis graphAnalysis;
-        public List<GraphPath> eulerCircle;
 
         public EulerCircle(GraphAnalysis _graphAnalysis)
         {

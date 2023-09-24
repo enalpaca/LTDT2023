@@ -32,8 +32,9 @@ namespace DOAN_LTDT_2023
             return true;
         }
 
-        public void Dijkstra()
+        public void Dijkstra(int sourceVertexDijsktra)
         {
+            this.sourceVertexDijsktra = sourceVertexDijsktra;
             int numberOfVertex = graphAnalysis.totalVertex;
             int[] L = new int[numberOfVertex]; //Chi phi duong di tu i den k
             int[] prevous = new int[numberOfVertex]; //Dinh lien truoc cua dinh k tren duong di
@@ -74,7 +75,7 @@ namespace DOAN_LTDT_2023
 
                 // Tìm đỉnh l thuộc T mà L[l] là min, gán j=l cho lần duyệt tiếp theo
                 int valueMin = Int32.MaxValue;
-                foreach(int l in T)
+                foreach (int l in T)
                 {
                     if (L[l] < valueMin && T.Contains(l))
                     {
@@ -110,8 +111,9 @@ namespace DOAN_LTDT_2023
 
             dijsktraPath = listGraphPath;
         }
-        public void FordBellman()
+        public void FordBellman(int sourceVertexFordBellman)
         {
+            this.sourceVertexFordBellman = sourceVertexFordBellman;
             List<GraphPath> listGraphPath = new List<GraphPath>();
             int numberOfVertex = graphAnalysis.totalVertex;
             int[,] cost = new int[numberOfVertex + 1, numberOfVertex];
