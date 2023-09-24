@@ -40,9 +40,8 @@ namespace DOAN_LTDT_2023
             return true;
         }
 
-        public static List<string> ShowAdjacencyMatrix(int[,] matrix)
+        public static void ShowAdjacencyMatrix(int[,] matrix)
         {
-            List<string> listOutput = new List<string>();
             for (int rowIndex = 0; rowIndex < matrix.GetLength(0); rowIndex++)
             {
                 int[] rows = new int[matrix.GetLength(1)];
@@ -53,10 +52,7 @@ namespace DOAN_LTDT_2023
                 }
 
                 Console.WriteLine(string.Join(" ", rows));
-                listOutput.Add(string.Join(" ", rows));
             }
-
-            return listOutput;
         }
 
         public int CountParallelEdge()
@@ -171,10 +167,9 @@ namespace DOAN_LTDT_2023
             return listVertices;
         }
 
-        public List<string> PrintDegreeOfVertices(List<Vertex> vertexs, bool checkIsUndirectedGraph)
+        public void PrintDegreeOfVertices(List<Vertex> vertexs, bool checkIsUndirectedGraph)
         {
             string[] vertexString = new string[vertexs.Count];
-            List<string> listOutput = new List<string>();
 
             for (int i = 0; i < vertexs.Count; i++)
             {
@@ -187,18 +182,10 @@ namespace DOAN_LTDT_2023
                     vertexString[i] = $"{vertexs[i].vertex}({vertexs[i].inDegree}-{vertexs[i].outDegree})";
                 }
             }
-
-            listOutput.Add(checkIsUndirectedGraph ? "Bac cua tung dinh:" : "(Bac vao - bac ra) cua tung dinh:");
-            listOutput.Add(string.Join(" ", vertexString));
-            Console.WriteLine(listOutput[0]);
-            Console.WriteLine(listOutput[1]);
-
-            return listOutput;
         }
 
         public void AnalyzeGraph()
         {
-
             this.totalEdgeLoop = this.CountEdgeLoops();
 
             if (this.isUndirectedGraph)
@@ -211,11 +198,10 @@ namespace DOAN_LTDT_2023
             this.totalPendantVertex = this.CountPendantVertex();
             this.totalIsolatedVertex = this.CountIsolatedVertex();
         }
-        public List<string> PrintGraphInfor()
+
+        public void PrintGraphInfor()
         {
-            List<string> listOutput = new List<string>();
             AnalyzeGraph();
-            listOutput.AddRange(GraphAnalysis.ShowAdjacencyMatrix(adjacencyMatrix));
 
             string checkIsUndirectedGraphResult = this.isUndirectedGraph ? "Do thi vo huong" : "Do thi co huong";
             string[] listStrInfo = new string[7]
@@ -232,11 +218,7 @@ namespace DOAN_LTDT_2023
             foreach(string str in listStrInfo)
             {
                 Console.WriteLine(str);
-                listOutput.Add(str);
             }
-            listOutput.AddRange(PrintDegreeOfVertices(this.vertices, this.isUndirectedGraph));
-
-            return listOutput;
         }
 
         public void PrintEdges()

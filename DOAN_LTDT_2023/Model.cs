@@ -23,33 +23,6 @@ namespace DOAN_LTDT_2023
         }
     }
 
-    class MyOderingStack
-    {
-        public List<int> myList = new List<int>();
-        public int Pop()
-        {
-            int value = myList.First();
-            myList.RemoveAt(0);
-            return value;
-        }
-
-        public void Push(int item)
-        {
-            myList.Add(item);
-            myList.Sort();
-        }
-
-        public bool Contains(int value)
-        {
-            return myList.Contains(value);
-        }
-
-        public int GetLength()
-        {
-            return myList.Count;
-        }
-    }
-
     public class Edge
     {
         public int begin;// begin Edge 
@@ -71,7 +44,6 @@ namespace DOAN_LTDT_2023
         public bool negativeCircle = false;
         public List<Edge> paths;
         public List<int> visitedVertices = new List<int>();
-
         public GraphPath(int _start, int _end, int _weight, List<Edge> _paths)
         {
             start = _start;

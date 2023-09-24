@@ -7,7 +7,6 @@ namespace DOAN_LTDT_2023
 {
     class FileSystem
     {
-
         public static int[,] ReadAdjacencyMatrixFromFile(string filePath)
         {
             string[] lines = File.ReadAllLines(filePath, Encoding.UTF8);

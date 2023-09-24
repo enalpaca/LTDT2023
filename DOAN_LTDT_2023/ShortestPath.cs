@@ -28,7 +28,6 @@ namespace DOAN_LTDT_2023
                     return false;
                 }
             }
-
             return true;
         }
 
@@ -221,7 +220,7 @@ namespace DOAN_LTDT_2023
             Console.WriteLine($"Tim duong di bang thuat toan Dijsktra");
             if (!CheckGraphHasPositiveWeight(graphAnalysis.listEdges))
             {
-                Console.WriteLine("Khong co duong di");
+                Console.WriteLine("Do thi co trong so am, Dijsktra khong ho tro do thi co trong so am");
             }
             else
             {

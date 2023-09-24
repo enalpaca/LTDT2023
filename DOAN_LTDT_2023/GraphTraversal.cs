@@ -15,7 +15,6 @@ namespace DOAN_LTDT_2023
             this.vertexs = _vertexs;
         }
     }
-
     class GraphTraversal
     {
         public int[] listDFSVisitedVertex = new int[0];

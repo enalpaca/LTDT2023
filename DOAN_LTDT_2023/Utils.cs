@@ -12,7 +12,6 @@ namespace DOAN_LTDT_2023
             }
             return true;
         }
-
         public static int ReadVertexSource(int totalVertex)
         {
             int sourceVertex = -1;
